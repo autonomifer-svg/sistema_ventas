@@ -1,0 +1,1127 @@
+[10-Aug-2025 03:38:20 Europe/Berlin] Intento de inicio de sesión para usuario: Admin
+[10-Aug-2025 03:38:20 Europe/Berlin] Resultados encontrados: 1
+[10-Aug-2025 03:38:20 Europe/Berlin] Usuario encontrado: Array
+(
+    [id] => 3
+    [nombre] => Administrador Principal
+    [password] => $2y$10$8V8bZ6q9d3m5u7wXeYvJ0OcWfLb1aD2gH3jK4lM5n6p7r8s9t0u
+    [rol] => admin
+)
+
+[10-Aug-2025 03:38:20 Europe/Berlin] Credenciales incorrectas
+[10-Aug-2025 03:38:22 Europe/Berlin] Intento de inicio de sesión para usuario: Admin
+[10-Aug-2025 03:38:22 Europe/Berlin] Resultados encontrados: 1
+[10-Aug-2025 03:38:22 Europe/Berlin] Usuario encontrado: Array
+(
+    [id] => 3
+    [nombre] => Administrador Principal
+    [password] => $2y$10$8V8bZ6q9d3m5u7wXeYvJ0OcWfLb1aD2gH3jK4lM5n6p7r8s9t0u
+    [rol] => admin
+)
+
+[10-Aug-2025 03:38:23 Europe/Berlin] Credenciales incorrectas
+[10-Aug-2025 03:38:30 Europe/Berlin] Intento de inicio de sesión para usuario: admin
+[10-Aug-2025 03:38:30 Europe/Berlin] Resultados encontrados: 1
+[10-Aug-2025 03:38:30 Europe/Berlin] Usuario encontrado: Array
+(
+    [id] => 3
+    [nombre] => Administrador Principal
+    [password] => $2y$10$8V8bZ6q9d3m5u7wXeYvJ0OcWfLb1aD2gH3jK4lM5n6p7r8s9t0u
+    [rol] => admin
+)
+
+[10-Aug-2025 03:38:30 Europe/Berlin] Credenciales incorrectas
+[10-Aug-2025 03:38:38 Europe/Berlin] Intento de inicio de sesión para usuario: Ale
+[10-Aug-2025 03:38:38 Europe/Berlin] Resultados encontrados: 1
+[10-Aug-2025 03:38:38 Europe/Berlin] Usuario encontrado: Array
+(
+    [id] => 2
+    [nombre] => Administrador Principal
+    [password] => $2y$10$.firY8p3clavHygSf/eSruOsVG6S9qtaA8r3/GVwJ0WiZNPxHJ4Ku
+    [rol] => vendedor
+)
+
+[10-Aug-2025 03:38:38 Europe/Berlin] Contraseña válida para usuario: Ale
+[10-Aug-2025 03:38:38 Europe/Berlin] Sesión iniciada. Variables de sesión: Array
+(
+    [user_id] => 2
+    [user_name] => Administrador Principal
+    [user_role] => vendedor
+)
+
+[10-Aug-2025 03:38:38 Europe/Berlin] Redirigiendo a index.php
+[10-Aug-2025 03:38:48 Europe/Berlin] Intento de inicio de sesión para usuario: Admin
+[10-Aug-2025 03:38:49 Europe/Berlin] Resultados encontrados: 1
+[10-Aug-2025 03:38:49 Europe/Berlin] Usuario encontrado: Array
+(
+    [id] => 3
+    [nombre] => Administrador Principal
+    [password] => $2y$10$8V8bZ6q9d3m5u7wXeYvJ0OcWfLb1aD2gH3jK4lM5n6p7r8s9t0u
+    [rol] => admin
+)
+
+[10-Aug-2025 03:38:49 Europe/Berlin] Credenciales incorrectas
+[10-Aug-2025 03:40:01 Europe/Berlin] Intento de inicio de sesión para usuario: Ale
+[10-Aug-2025 03:40:01 Europe/Berlin] Resultados encontrados: 1
+[10-Aug-2025 03:40:01 Europe/Berlin] Usuario encontrado: Array
+(
+    [id] => 2
+    [nombre] => Administrador Principal
+    [password] => $2y$10$.firY8p3clavHygSf/eSruOsVG6S9qtaA8r3/GVwJ0WiZNPxHJ4Ku
+    [rol] => vendedor
+)
+
+[10-Aug-2025 03:40:01 Europe/Berlin] Contraseña válida para usuario: Ale
+[10-Aug-2025 03:40:01 Europe/Berlin] Sesión iniciada. Variables de sesión: Array
+(
+    [user_id] => 2
+    [user_name] => Administrador Principal
+    [user_role] => vendedor
+)
+
+[10-Aug-2025 03:40:01 Europe/Berlin] Redirigiendo a index.php
+[10-Aug-2025 03:40:01 Europe/Berlin] Acceso a login.php sin método POST
+[10-Aug-2025 03:40:04 Europe/Berlin] Intento de inicio de sesión para usuario: Admin
+[10-Aug-2025 03:40:04 Europe/Berlin] Resultados encontrados: 1
+[10-Aug-2025 03:40:04 Europe/Berlin] Usuario encontrado: Array
+(
+    [id] => 3
+    [nombre] => Administrador Principal
+    [password] => $2y$10$8V8bZ6q9d3m5u7wXeYvJ0OcWfLb1aD2gH3jK4lM5n6p7r8s9t0u
+    [rol] => admin
+)
+
+[10-Aug-2025 03:40:04 Europe/Berlin] Credenciales incorrectas
+[10-Aug-2025 03:40:11 Europe/Berlin] Intento de inicio de sesión para usuario: admin
+[10-Aug-2025 03:40:11 Europe/Berlin] Resultados encontrados: 1
+[10-Aug-2025 03:40:11 Europe/Berlin] Usuario encontrado: Array
+(
+    [id] => 3
+    [nombre] => Administrador Principal
+    [password] => $2y$10$8V8bZ6q9d3m5u7wXeYvJ0OcWfLb1aD2gH3jK4lM5n6p7r8s9t0u
+    [rol] => admin
+)
+
+[10-Aug-2025 03:40:11 Europe/Berlin] Credenciales incorrectas
+[10-Aug-2025 03:41:11 Europe/Berlin] Intento de inicio de sesión para usuario: Ale
+[10-Aug-2025 03:41:11 Europe/Berlin] Resultados encontrados: 1
+[10-Aug-2025 03:41:11 Europe/Berlin] Usuario encontrado: Array
+(
+    [id] => 2
+    [nombre] => Administrador Principal
+    [password] => $2y$10$.firY8p3clavHygSf/eSruOsVG6S9qtaA8r3/GVwJ0WiZNPxHJ4Ku
+    [rol] => vendedor
+)
+
+[10-Aug-2025 03:41:11 Europe/Berlin] Contraseña válida para usuario: Ale
+[10-Aug-2025 03:41:11 Europe/Berlin] Sesión iniciada. Variables de sesión: Array
+(
+    [user_id] => 2
+    [user_name] => Administrador Principal
+    [user_role] => vendedor
+)
+
+[10-Aug-2025 03:41:11 Europe/Berlin] Redirigiendo a index.php
+[10-Aug-2025 03:41:11 Europe/Berlin] Acceso a login.php sin método POST
+[10-Aug-2025 03:41:25 Europe/Berlin] Acceso a login.php sin método POST
+[10-Aug-2025 03:41:28 Europe/Berlin] Acceso a login.php sin método POST
+[10-Aug-2025 03:41:29 Europe/Berlin] Acceso a login.php sin método POST
+[10-Aug-2025 03:41:29 Europe/Berlin] Acceso a login.php sin método POST
+[10-Aug-2025 03:41:30 Europe/Berlin] Acceso a login.php sin método POST
+[10-Aug-2025 03:41:30 Europe/Berlin] Acceso a login.php sin método POST
+[10-Aug-2025 03:43:57 Europe/Berlin] Acceso a login.php sin método POST
+[10-Aug-2025 03:44:37 Europe/Berlin] Acceso a login.php sin método POST
+[10-Aug-2025 03:44:41 Europe/Berlin] Intento de inicio de sesión para usuario: Admin
+[10-Aug-2025 03:44:41 Europe/Berlin] Resultados encontrados: 1
+[10-Aug-2025 03:44:41 Europe/Berlin] Usuario encontrado: Array
+(
+    [id] => 3
+    [nombre] => Administrador Principal
+    [password] => $2y$10$8V8bZ6q9d3m5u7wXeYvJ0OcWfLb1aD2gH3jK4lM5n6p7r8s9t0u
+    [rol] => admin
+)
+
+[10-Aug-2025 03:44:41 Europe/Berlin] Credenciales incorrectas
+[10-Aug-2025 03:45:00 Europe/Berlin] Acceso a login.php sin método POST
+[10-Aug-2025 03:45:04 Europe/Berlin] Intento de inicio de sesión para usuario: Ale
+[10-Aug-2025 03:45:04 Europe/Berlin] Resultados encontrados: 1
+[10-Aug-2025 03:45:04 Europe/Berlin] Usuario encontrado: Array
+(
+    [id] => 2
+    [nombre] => Administrador Principal
+    [password] => $2y$10$.firY8p3clavHygSf/eSruOsVG6S9qtaA8r3/GVwJ0WiZNPxHJ4Ku
+    [rol] => vendedor
+)
+
+[10-Aug-2025 03:45:04 Europe/Berlin] Contraseña válida para usuario: Ale
+[10-Aug-2025 03:45:04 Europe/Berlin] Sesión iniciada. Variables de sesión: Array
+(
+    [user_id] => 2
+    [user_name] => Administrador Principal
+    [user_role] => vendedor
+)
+
+[10-Aug-2025 03:45:04 Europe/Berlin] Redirigiendo a index.php
+[10-Aug-2025 03:45:04 Europe/Berlin] Acceso a login.php sin método POST
+[14-Aug-2025 01:24:01 Europe/Berlin] Acceso a login.php sin método POST
+[14-Aug-2025 01:24:05 Europe/Berlin] Intento de inicio de sesión para usuario: Ale
+[14-Aug-2025 01:24:05 Europe/Berlin] Resultados encontrados: 1
+[14-Aug-2025 01:24:05 Europe/Berlin] Usuario encontrado: Array
+(
+    [id] => 2
+    [nombre] => Administrador Principal
+    [password] => $2y$10$.firY8p3clavHygSf/eSruOsVG6S9qtaA8r3/GVwJ0WiZNPxHJ4Ku
+    [rol] => admin
+)
+
+[14-Aug-2025 01:24:05 Europe/Berlin] Contraseña válida para usuario: Ale
+[14-Aug-2025 01:24:05 Europe/Berlin] Sesión iniciada. Variables de sesión: Array
+(
+    [user_id] => 2
+    [user_name] => Administrador Principal
+    [user_role] => admin
+)
+
+[14-Aug-2025 01:24:05 Europe/Berlin] Redirigiendo a index.php
+[14-Aug-2025 01:24:23 Europe/Berlin] Acceso a login.php sin método POST
+[14-Aug-2025 01:24:26 Europe/Berlin] Intento de inicio de sesión para usuario: Admin
+[14-Aug-2025 01:24:26 Europe/Berlin] Resultados encontrados: 1
+[14-Aug-2025 01:24:26 Europe/Berlin] Usuario encontrado: Array
+(
+    [id] => 3
+    [nombre] => Administrador Principal
+    [password] => $2y$10$8V8bZ6q9d3m5u7wXeYvJ0OcWfLb1aD2gH3jK4lM5n6p7r8s9t0u
+    [rol] => admin
+)
+
+[14-Aug-2025 01:24:26 Europe/Berlin] Credenciales incorrectas
+[14-Aug-2025 01:24:35 Europe/Berlin] Intento de inicio de sesión para usuario: admin
+[14-Aug-2025 01:24:35 Europe/Berlin] Resultados encontrados: 1
+[14-Aug-2025 01:24:35 Europe/Berlin] Usuario encontrado: Array
+(
+    [id] => 3
+    [nombre] => Administrador Principal
+    [password] => $2y$10$8V8bZ6q9d3m5u7wXeYvJ0OcWfLb1aD2gH3jK4lM5n6p7r8s9t0u
+    [rol] => admin
+)
+
+[14-Aug-2025 01:24:35 Europe/Berlin] Credenciales incorrectas
+[14-Aug-2025 01:24:39 Europe/Berlin] Intento de inicio de sesión para usuario: Ale
+[14-Aug-2025 01:24:39 Europe/Berlin] Resultados encontrados: 1
+[14-Aug-2025 01:24:39 Europe/Berlin] Usuario encontrado: Array
+(
+    [id] => 2
+    [nombre] => Administrador Principal
+    [password] => $2y$10$.firY8p3clavHygSf/eSruOsVG6S9qtaA8r3/GVwJ0WiZNPxHJ4Ku
+    [rol] => admin
+)
+
+[14-Aug-2025 01:24:39 Europe/Berlin] Contraseña válida para usuario: Ale
+[14-Aug-2025 01:24:39 Europe/Berlin] Sesión iniciada. Variables de sesión: Array
+(
+    [user_id] => 2
+    [user_name] => Administrador Principal
+    [user_role] => admin
+)
+
+[14-Aug-2025 01:24:39 Europe/Berlin] Redirigiendo a index.php
+[14-Aug-2025 01:32:35 Europe/Berlin] BASE URL generada: http://localhost:8080/sistema_ventas/
+[14-Aug-2025 01:32:35 Europe/Berlin] Protocol: http:// | Host: localhost:8080 | Port:  | Path: /sistema_ventas/
+[14-Aug-2025 01:32:35 Europe/Berlin] Acceso a login.php - Método GET
+[14-Aug-2025 01:32:43 Europe/Berlin] BASE URL generada: http://localhost:8080/sistema_ventas/
+[14-Aug-2025 01:32:43 Europe/Berlin] Protocol: http:// | Host: localhost:8080 | Port:  | Path: /sistema_ventas/
+[14-Aug-2025 01:32:43 Europe/Berlin] === INICIO DE SESIÓN ===
+[14-Aug-2025 01:32:43 Europe/Berlin] Usuario: Ale
+[14-Aug-2025 01:32:43 Europe/Berlin] Password recibido: Sí (8 caracteres)
+[14-Aug-2025 01:32:43 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[14-Aug-2025 01:32:43 Europe/Berlin] Usuario encontrado en BD:
+[14-Aug-2025 01:32:43 Europe/Berlin] - ID: 2
+[14-Aug-2025 01:32:43 Europe/Berlin] - Nombre: Administrador Principal
+[14-Aug-2025 01:32:43 Europe/Berlin] - Usuario: Ale
+[14-Aug-2025 01:32:43 Europe/Berlin] - Rol: admin
+[14-Aug-2025 01:32:43 Europe/Berlin] - Hash almacenado: $2y$10$.firY8p3clavH...
+[14-Aug-2025 01:32:43 Europe/Berlin] Verificando contraseña...
+[14-Aug-2025 01:32:43 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Ale
+[14-Aug-2025 01:32:43 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[14-Aug-2025 01:32:43 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 2
+    [user_name] => Administrador Principal
+    [user_role] => admin
+    [login_time] => 1755127963
+)
+
+[14-Aug-2025 01:32:43 Europe/Berlin] ✅ Último acceso actualizado
+[14-Aug-2025 01:32:43 Europe/Berlin] 🚀 Redirigiendo a index.php
+[14-Aug-2025 01:32:43 Europe/Berlin] Redirigiendo a: http://localhost:8080/sistema_ventas/index.php
+[14-Aug-2025 01:32:48 Europe/Berlin] BASE URL generada: http://localhost:8080/sistema_ventas/
+[14-Aug-2025 01:32:48 Europe/Berlin] Protocol: http:// | Host: localhost:8080 | Port:  | Path: /sistema_ventas/
+[14-Aug-2025 01:32:48 Europe/Berlin] Acceso a login.php - Método GET
+[14-Aug-2025 01:32:53 Europe/Berlin] BASE URL generada: http://localhost:8080/sistema_ventas/
+[14-Aug-2025 01:32:53 Europe/Berlin] Protocol: http:// | Host: localhost:8080 | Port:  | Path: /sistema_ventas/
+[14-Aug-2025 01:32:53 Europe/Berlin] === INICIO DE SESIÓN ===
+[14-Aug-2025 01:32:53 Europe/Berlin] Usuario: Admin
+[14-Aug-2025 01:32:53 Europe/Berlin] Password recibido: Sí (8 caracteres)
+[14-Aug-2025 01:32:53 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[14-Aug-2025 01:32:53 Europe/Berlin] Usuario encontrado en BD:
+[14-Aug-2025 01:32:53 Europe/Berlin] - ID: 3
+[14-Aug-2025 01:32:53 Europe/Berlin] - Nombre: Administrador Principal
+[14-Aug-2025 01:32:53 Europe/Berlin] - Usuario: Admin
+[14-Aug-2025 01:32:53 Europe/Berlin] - Rol: admin
+[14-Aug-2025 01:32:53 Europe/Berlin] - Hash almacenado: $2y$10$8V8bZ6q9d3m5u...
+[14-Aug-2025 01:32:53 Europe/Berlin] Verificando contraseña...
+[14-Aug-2025 01:32:53 Europe/Berlin] ❌ Contraseña INCORRECTA para usuario: Admin
+[14-Aug-2025 01:32:57 Europe/Berlin] BASE URL generada: http://localhost:8080/sistema_ventas/
+[14-Aug-2025 01:32:57 Europe/Berlin] Protocol: http:// | Host: localhost:8080 | Port:  | Path: /sistema_ventas/
+[14-Aug-2025 01:32:57 Europe/Berlin] === INICIO DE SESIÓN ===
+[14-Aug-2025 01:32:57 Europe/Berlin] Usuario: Ale
+[14-Aug-2025 01:32:57 Europe/Berlin] Password recibido: Sí (8 caracteres)
+[14-Aug-2025 01:32:57 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[14-Aug-2025 01:32:57 Europe/Berlin] Usuario encontrado en BD:
+[14-Aug-2025 01:32:57 Europe/Berlin] - ID: 2
+[14-Aug-2025 01:32:57 Europe/Berlin] - Nombre: Administrador Principal
+[14-Aug-2025 01:32:57 Europe/Berlin] - Usuario: Ale
+[14-Aug-2025 01:32:57 Europe/Berlin] - Rol: admin
+[14-Aug-2025 01:32:57 Europe/Berlin] - Hash almacenado: $2y$10$.firY8p3clavH...
+[14-Aug-2025 01:32:57 Europe/Berlin] Verificando contraseña...
+[14-Aug-2025 01:32:57 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Ale
+[14-Aug-2025 01:32:57 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[14-Aug-2025 01:32:57 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 2
+    [user_name] => Administrador Principal
+    [user_role] => admin
+    [login_time] => 1755127977
+)
+
+[14-Aug-2025 01:32:57 Europe/Berlin] ✅ Último acceso actualizado
+[14-Aug-2025 01:32:57 Europe/Berlin] 🚀 Redirigiendo a index.php
+[14-Aug-2025 01:32:57 Europe/Berlin] Redirigiendo a: http://localhost:8080/sistema_ventas/index.php
+[14-Aug-2025 02:08:42 Europe/Berlin] BASE URL generada: http://localhost:8080/sistema_ventas/
+[14-Aug-2025 02:08:42 Europe/Berlin] Protocol: http:// | Host: localhost:8080 | Port:  | Path: /sistema_ventas/
+[14-Aug-2025 02:08:42 Europe/Berlin] Acceso a login.php - Método GET
+[14-Aug-2025 02:08:51 Europe/Berlin] BASE URL generada: http://localhost:8080/sistema_ventas/
+[14-Aug-2025 02:08:51 Europe/Berlin] Protocol: http:// | Host: localhost:8080 | Port:  | Path: /sistema_ventas/
+[14-Aug-2025 02:08:51 Europe/Berlin] === INICIO DE SESIÓN ===
+[14-Aug-2025 02:08:51 Europe/Berlin] Usuario: Admin
+[14-Aug-2025 02:08:51 Europe/Berlin] Password recibido: Sí (8 caracteres)
+[14-Aug-2025 02:08:51 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[14-Aug-2025 02:08:51 Europe/Berlin] Usuario encontrado en BD:
+[14-Aug-2025 02:08:51 Europe/Berlin] - ID: 3
+[14-Aug-2025 02:08:51 Europe/Berlin] - Nombre: Administrador Principal
+[14-Aug-2025 02:08:51 Europe/Berlin] - Usuario: Admin
+[14-Aug-2025 02:08:51 Europe/Berlin] - Rol: admin
+[14-Aug-2025 02:08:51 Europe/Berlin] - Hash almacenado: $2y$10$8V8bZ6q9d3m5u...
+[14-Aug-2025 02:08:51 Europe/Berlin] Verificando contraseña...
+[14-Aug-2025 02:08:51 Europe/Berlin] ❌ Contraseña INCORRECTA para usuario: Admin
+[14-Aug-2025 02:09:00 Europe/Berlin] BASE URL generada: http://localhost:8080/sistema_ventas/
+[14-Aug-2025 02:09:00 Europe/Berlin] Protocol: http:// | Host: localhost:8080 | Port:  | Path: /sistema_ventas/
+[14-Aug-2025 02:09:00 Europe/Berlin] === INICIO DE SESIÓN ===
+[14-Aug-2025 02:09:00 Europe/Berlin] Usuario: Ale
+[14-Aug-2025 02:09:00 Europe/Berlin] Password recibido: Sí (8 caracteres)
+[14-Aug-2025 02:09:00 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[14-Aug-2025 02:09:00 Europe/Berlin] Usuario encontrado en BD:
+[14-Aug-2025 02:09:00 Europe/Berlin] - ID: 2
+[14-Aug-2025 02:09:00 Europe/Berlin] - Nombre: Administrador Principal
+[14-Aug-2025 02:09:00 Europe/Berlin] - Usuario: Ale
+[14-Aug-2025 02:09:00 Europe/Berlin] - Rol: admin
+[14-Aug-2025 02:09:00 Europe/Berlin] - Hash almacenado: $2y$10$.firY8p3clavH...
+[14-Aug-2025 02:09:00 Europe/Berlin] Verificando contraseña...
+[14-Aug-2025 02:09:00 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Ale
+[14-Aug-2025 02:09:00 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[14-Aug-2025 02:09:00 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 2
+    [user_name] => Administrador Principal
+    [user_role] => admin
+    [login_time] => 1755130140
+)
+
+[14-Aug-2025 02:09:00 Europe/Berlin] ✅ Último acceso actualizado
+[14-Aug-2025 02:09:00 Europe/Berlin] 🚀 Redirigiendo a index.php
+[14-Aug-2025 02:09:00 Europe/Berlin] Redirigiendo a: http://localhost:8080/sistema_ventas/index.php
+[14-Aug-2025 03:07:50 Europe/Berlin] Acceso a login.php - Método GET
+[14-Aug-2025 03:07:52 Europe/Berlin] === INICIO DE SESIÓN ===
+[14-Aug-2025 03:07:52 Europe/Berlin] Usuario: Ale
+[14-Aug-2025 03:07:52 Europe/Berlin] Password recibido: Sí (8 caracteres)
+[14-Aug-2025 03:07:52 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[14-Aug-2025 03:07:52 Europe/Berlin] Usuario encontrado en BD:
+[14-Aug-2025 03:07:52 Europe/Berlin] - ID: 2
+[14-Aug-2025 03:07:52 Europe/Berlin] - Nombre: Administrador Principal
+[14-Aug-2025 03:07:52 Europe/Berlin] - Usuario: Ale
+[14-Aug-2025 03:07:52 Europe/Berlin] - Rol: admin
+[14-Aug-2025 03:07:52 Europe/Berlin] - Hash almacenado: $2y$10$.firY8p3clavH...
+[14-Aug-2025 03:07:52 Europe/Berlin] Verificando contraseña...
+[14-Aug-2025 03:07:52 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Ale
+[14-Aug-2025 03:07:52 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[14-Aug-2025 03:07:52 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 2
+    [user_name] => Administrador Principal
+    [user_role] => admin
+    [login_time] => 1755133672
+)
+
+[14-Aug-2025 03:07:52 Europe/Berlin] ✅ Último acceso actualizado
+[14-Aug-2025 03:07:52 Europe/Berlin] 🚀 Redirigiendo a index.php
+[14-Aug-2025 03:07:52 Europe/Berlin] PHP Warning:  Undefined variable $protocol in C:\xampp\htdocs\sistema_ventas\includes\config.php on line 44
+[14-Aug-2025 03:07:52 Europe/Berlin] PHP Warning:  Undefined variable $host in C:\xampp\htdocs\sistema_ventas\includes\config.php on line 44
+[14-Aug-2025 03:07:52 Europe/Berlin] PHP Warning:  Undefined variable $port in C:\xampp\htdocs\sistema_ventas\includes\config.php on line 44
+[14-Aug-2025 03:21:19 Europe/Berlin] Acceso a login.php - Método GET
+[14-Aug-2025 03:21:22 Europe/Berlin] === INICIO DE SESIÓN ===
+[14-Aug-2025 03:21:22 Europe/Berlin] Usuario: Admin2
+[14-Aug-2025 03:21:22 Europe/Berlin] Password recibido: Sí (5 caracteres)
+[14-Aug-2025 03:21:22 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[14-Aug-2025 03:21:22 Europe/Berlin] Usuario encontrado en BD:
+[14-Aug-2025 03:21:22 Europe/Berlin] - ID: 4
+[14-Aug-2025 03:21:22 Europe/Berlin] - Nombre: Armando
+[14-Aug-2025 03:21:22 Europe/Berlin] - Usuario: Admin2
+[14-Aug-2025 03:21:22 Europe/Berlin] - Rol: admin
+[14-Aug-2025 03:21:22 Europe/Berlin] - Hash almacenado: $2y$10$NmxNIveA43R14...
+[14-Aug-2025 03:21:22 Europe/Berlin] Verificando contraseña...
+[14-Aug-2025 03:21:22 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Admin2
+[14-Aug-2025 03:21:22 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[14-Aug-2025 03:21:22 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 4
+    [user_name] => Armando
+    [user_role] => admin
+    [login_time] => 1755134482
+)
+
+[14-Aug-2025 03:21:22 Europe/Berlin] ✅ Último acceso actualizado
+[14-Aug-2025 03:21:22 Europe/Berlin] 🚀 Redirigiendo a index.php
+[14-Aug-2025 03:32:42 Europe/Berlin] Acceso a login.php - Método GET
+[14-Aug-2025 03:32:45 Europe/Berlin] === INICIO DE SESIÓN ===
+[14-Aug-2025 03:32:45 Europe/Berlin] Usuario: Admin2
+[14-Aug-2025 03:32:45 Europe/Berlin] Password recibido: Sí (5 caracteres)
+[14-Aug-2025 03:32:45 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[14-Aug-2025 03:32:45 Europe/Berlin] Usuario encontrado en BD:
+[14-Aug-2025 03:32:45 Europe/Berlin] - ID: 4
+[14-Aug-2025 03:32:45 Europe/Berlin] - Nombre: Armando
+[14-Aug-2025 03:32:45 Europe/Berlin] - Usuario: Admin2
+[14-Aug-2025 03:32:45 Europe/Berlin] - Rol: admin
+[14-Aug-2025 03:32:45 Europe/Berlin] - Hash almacenado: $2y$10$NmxNIveA43R14...
+[14-Aug-2025 03:32:45 Europe/Berlin] Verificando contraseña...
+[14-Aug-2025 03:32:45 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Admin2
+[14-Aug-2025 03:32:45 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[14-Aug-2025 03:32:45 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 4
+    [user_name] => Armando
+    [user_role] => admin
+    [login_time] => 1755135165
+)
+
+[14-Aug-2025 03:32:45 Europe/Berlin] ✅ Último acceso actualizado
+[14-Aug-2025 03:32:45 Europe/Berlin] 🚀 Redirigiendo a index.php
+[14-Aug-2025 03:32:48 Europe/Berlin] Acceso a login.php - Método GET
+[14-Aug-2025 03:32:51 Europe/Berlin] === INICIO DE SESIÓN ===
+[14-Aug-2025 03:32:51 Europe/Berlin] Usuario: Ale
+[14-Aug-2025 03:32:51 Europe/Berlin] Password recibido: Sí (8 caracteres)
+[14-Aug-2025 03:32:51 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[14-Aug-2025 03:32:51 Europe/Berlin] Usuario encontrado en BD:
+[14-Aug-2025 03:32:51 Europe/Berlin] - ID: 2
+[14-Aug-2025 03:32:51 Europe/Berlin] - Nombre: Administrador Principal
+[14-Aug-2025 03:32:51 Europe/Berlin] - Usuario: Ale
+[14-Aug-2025 03:32:51 Europe/Berlin] - Rol: admin
+[14-Aug-2025 03:32:51 Europe/Berlin] - Hash almacenado: $2y$10$.firY8p3clavH...
+[14-Aug-2025 03:32:51 Europe/Berlin] Verificando contraseña...
+[14-Aug-2025 03:32:51 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Ale
+[14-Aug-2025 03:32:51 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[14-Aug-2025 03:32:51 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 2
+    [user_name] => Administrador Principal
+    [user_role] => admin
+    [login_time] => 1755135171
+)
+
+[14-Aug-2025 03:32:51 Europe/Berlin] ✅ Último acceso actualizado
+[14-Aug-2025 03:32:51 Europe/Berlin] 🚀 Redirigiendo a index.php
+[14-Aug-2025 03:33:04 Europe/Berlin] Acceso a login.php - Método GET
+[14-Aug-2025 03:33:11 Europe/Berlin] === INICIO DE SESIÓN ===
+[14-Aug-2025 03:33:11 Europe/Berlin] Usuario: Admin2
+[14-Aug-2025 03:33:11 Europe/Berlin] Password recibido: Sí (5 caracteres)
+[14-Aug-2025 03:33:11 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[14-Aug-2025 03:33:11 Europe/Berlin] Usuario encontrado en BD:
+[14-Aug-2025 03:33:11 Europe/Berlin] - ID: 4
+[14-Aug-2025 03:33:11 Europe/Berlin] - Nombre: Armando
+[14-Aug-2025 03:33:11 Europe/Berlin] - Usuario: Admin2
+[14-Aug-2025 03:33:11 Europe/Berlin] - Rol: admin
+[14-Aug-2025 03:33:11 Europe/Berlin] - Hash almacenado: $2y$10$NmxNIveA43R14...
+[14-Aug-2025 03:33:11 Europe/Berlin] Verificando contraseña...
+[14-Aug-2025 03:33:11 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Admin2
+[14-Aug-2025 03:33:11 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[14-Aug-2025 03:33:11 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 4
+    [user_name] => Armando
+    [user_role] => admin
+    [login_time] => 1755135191
+)
+
+[14-Aug-2025 03:33:11 Europe/Berlin] ✅ Último acceso actualizado
+[14-Aug-2025 03:33:11 Europe/Berlin] 🚀 Redirigiendo a index.php
+[14-Aug-2025 03:34:05 Europe/Berlin] Acceso a login.php - Método GET
+[14-Aug-2025 03:34:07 Europe/Berlin] === INICIO DE SESIÓN ===
+[14-Aug-2025 03:34:07 Europe/Berlin] Usuario: Ale
+[14-Aug-2025 03:34:07 Europe/Berlin] Password recibido: Sí (8 caracteres)
+[14-Aug-2025 03:34:07 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[14-Aug-2025 03:34:07 Europe/Berlin] Usuario encontrado en BD:
+[14-Aug-2025 03:34:07 Europe/Berlin] - ID: 2
+[14-Aug-2025 03:34:07 Europe/Berlin] - Nombre: Administrador Principal
+[14-Aug-2025 03:34:07 Europe/Berlin] - Usuario: Ale
+[14-Aug-2025 03:34:07 Europe/Berlin] - Rol: vendedor
+[14-Aug-2025 03:34:07 Europe/Berlin] - Hash almacenado: $2y$10$.firY8p3clavH...
+[14-Aug-2025 03:34:07 Europe/Berlin] Verificando contraseña...
+[14-Aug-2025 03:34:08 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Ale
+[14-Aug-2025 03:34:08 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[14-Aug-2025 03:34:08 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 2
+    [user_name] => Administrador Principal
+    [user_role] => vendedor
+    [login_time] => 1755135248
+)
+
+[14-Aug-2025 03:34:08 Europe/Berlin] ✅ Último acceso actualizado
+[14-Aug-2025 03:34:08 Europe/Berlin] 🚀 Redirigiendo a index.php
+[14-Aug-2025 04:16:38 Europe/Berlin] Acceso a login.php - Método GET
+[14-Aug-2025 04:16:41 Europe/Berlin] === INICIO DE SESIÓN ===
+[14-Aug-2025 04:16:41 Europe/Berlin] Usuario: Admin2
+[14-Aug-2025 04:16:41 Europe/Berlin] Password recibido: Sí (5 caracteres)
+[14-Aug-2025 04:16:41 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[14-Aug-2025 04:16:41 Europe/Berlin] Usuario encontrado en BD:
+[14-Aug-2025 04:16:41 Europe/Berlin] - ID: 4
+[14-Aug-2025 04:16:41 Europe/Berlin] - Nombre: Armando
+[14-Aug-2025 04:16:41 Europe/Berlin] - Usuario: Admin2
+[14-Aug-2025 04:16:41 Europe/Berlin] - Rol: admin
+[14-Aug-2025 04:16:41 Europe/Berlin] - Hash almacenado: $2y$10$NmxNIveA43R14...
+[14-Aug-2025 04:16:41 Europe/Berlin] Verificando contraseña...
+[14-Aug-2025 04:16:41 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Admin2
+[14-Aug-2025 04:16:41 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[14-Aug-2025 04:16:41 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 4
+    [user_name] => Armando
+    [user_role] => admin
+    [login_time] => 1755137801
+)
+
+[14-Aug-2025 04:16:41 Europe/Berlin] ✅ Último acceso actualizado
+[14-Aug-2025 04:16:41 Europe/Berlin] 🚀 Redirigiendo a index.php
+[14-Aug-2025 04:24:04 Europe/Berlin] Acceso a login.php - Método GET
+[14-Aug-2025 04:24:06 Europe/Berlin] === INICIO DE SESIÓN ===
+[14-Aug-2025 04:24:06 Europe/Berlin] Usuario: Admin2
+[14-Aug-2025 04:24:06 Europe/Berlin] Password recibido: Sí (5 caracteres)
+[14-Aug-2025 04:24:06 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[14-Aug-2025 04:24:06 Europe/Berlin] Usuario encontrado en BD:
+[14-Aug-2025 04:24:06 Europe/Berlin] - ID: 4
+[14-Aug-2025 04:24:06 Europe/Berlin] - Nombre: Armando
+[14-Aug-2025 04:24:06 Europe/Berlin] - Usuario: Admin2
+[14-Aug-2025 04:24:06 Europe/Berlin] - Rol: admin
+[14-Aug-2025 04:24:06 Europe/Berlin] - Hash almacenado: $2y$10$NmxNIveA43R14...
+[14-Aug-2025 04:24:06 Europe/Berlin] Verificando contraseña...
+[14-Aug-2025 04:24:06 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Admin2
+[14-Aug-2025 04:24:06 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[14-Aug-2025 04:24:06 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 4
+    [user_name] => Armando
+    [user_role] => admin
+    [login_time] => 1755138246
+)
+
+[14-Aug-2025 04:24:06 Europe/Berlin] ✅ Último acceso actualizado
+[14-Aug-2025 04:24:06 Europe/Berlin] 🚀 Redirigiendo a index.php
+[14-Aug-2025 04:34:57 Europe/Berlin] Acceso a login.php - Método GET
+[14-Aug-2025 04:34:59 Europe/Berlin] === INICIO DE SESIÓN ===
+[14-Aug-2025 04:34:59 Europe/Berlin] Usuario: Ale
+[14-Aug-2025 04:34:59 Europe/Berlin] Password recibido: Sí (8 caracteres)
+[14-Aug-2025 04:34:59 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[14-Aug-2025 04:34:59 Europe/Berlin] Usuario encontrado en BD:
+[14-Aug-2025 04:34:59 Europe/Berlin] - ID: 2
+[14-Aug-2025 04:34:59 Europe/Berlin] - Nombre: Administrador Principal
+[14-Aug-2025 04:34:59 Europe/Berlin] - Usuario: Ale
+[14-Aug-2025 04:34:59 Europe/Berlin] - Rol: vendedor
+[14-Aug-2025 04:34:59 Europe/Berlin] - Hash almacenado: $2y$10$.firY8p3clavH...
+[14-Aug-2025 04:34:59 Europe/Berlin] Verificando contraseña...
+[14-Aug-2025 04:34:59 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Ale
+[14-Aug-2025 04:34:59 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[14-Aug-2025 04:34:59 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 2
+    [user_name] => Administrador Principal
+    [user_role] => vendedor
+    [login_time] => 1755138899
+)
+
+[14-Aug-2025 04:34:59 Europe/Berlin] ✅ Último acceso actualizado
+[14-Aug-2025 04:34:59 Europe/Berlin] 🚀 Redirigiendo a index.php
+[14-Aug-2025 23:19:33 Europe/Berlin] Acceso a login.php - Método GET
+[14-Aug-2025 23:20:14 Europe/Berlin] === INICIO DE SESIÓN ===
+[14-Aug-2025 23:20:14 Europe/Berlin] Usuario: Admin2
+[14-Aug-2025 23:20:14 Europe/Berlin] Password recibido: Sí (5 caracteres)
+[14-Aug-2025 23:20:14 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[14-Aug-2025 23:20:14 Europe/Berlin] Usuario encontrado en BD:
+[14-Aug-2025 23:20:14 Europe/Berlin] - ID: 4
+[14-Aug-2025 23:20:14 Europe/Berlin] - Nombre: Armando
+[14-Aug-2025 23:20:14 Europe/Berlin] - Usuario: Admin2
+[14-Aug-2025 23:20:14 Europe/Berlin] - Rol: admin
+[14-Aug-2025 23:20:14 Europe/Berlin] - Hash almacenado: $2y$10$NmxNIveA43R14...
+[14-Aug-2025 23:20:14 Europe/Berlin] Verificando contraseña...
+[14-Aug-2025 23:20:14 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Admin2
+[14-Aug-2025 23:20:14 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[14-Aug-2025 23:20:14 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 4
+    [user_name] => Armando
+    [user_role] => admin
+    [login_time] => 1755206414
+)
+
+[14-Aug-2025 23:20:14 Europe/Berlin] ✅ Último acceso actualizado
+[14-Aug-2025 23:20:14 Europe/Berlin] 🚀 Redirigiendo a index.php
+[15-Aug-2025 03:32:31 Europe/Berlin] Acceso a login.php - Método GET
+[15-Aug-2025 03:32:36 Europe/Berlin] === INICIO DE SESIÓN ===
+[15-Aug-2025 03:32:36 Europe/Berlin] Usuario: Ale
+[15-Aug-2025 03:32:36 Europe/Berlin] Password recibido: Sí (8 caracteres)
+[15-Aug-2025 03:32:36 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[15-Aug-2025 03:32:36 Europe/Berlin] Usuario encontrado en BD:
+[15-Aug-2025 03:32:36 Europe/Berlin] - ID: 2
+[15-Aug-2025 03:32:36 Europe/Berlin] - Nombre: Administrador Principal
+[15-Aug-2025 03:32:36 Europe/Berlin] - Usuario: Ale
+[15-Aug-2025 03:32:36 Europe/Berlin] - Rol: vendedor
+[15-Aug-2025 03:32:36 Europe/Berlin] - Hash almacenado: $2y$10$.firY8p3clavH...
+[15-Aug-2025 03:32:36 Europe/Berlin] Verificando contraseña...
+[15-Aug-2025 03:32:36 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Ale
+[15-Aug-2025 03:32:36 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[15-Aug-2025 03:32:36 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 2
+    [user_name] => Administrador Principal
+    [user_role] => vendedor
+    [login_time] => 1755221556
+)
+
+[15-Aug-2025 03:32:36 Europe/Berlin] ✅ Último acceso actualizado
+[15-Aug-2025 03:32:36 Europe/Berlin] 🚀 Redirigiendo a index.php
+[15-Aug-2025 03:32:36 Europe/Berlin] Acceso a login.php - Método GET
+[15-Aug-2025 03:32:41 Europe/Berlin] === INICIO DE SESIÓN ===
+[15-Aug-2025 03:32:41 Europe/Berlin] Usuario: Admin2
+[15-Aug-2025 03:32:41 Europe/Berlin] Password recibido: Sí (5 caracteres)
+[15-Aug-2025 03:32:41 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[15-Aug-2025 03:32:41 Europe/Berlin] Usuario encontrado en BD:
+[15-Aug-2025 03:32:41 Europe/Berlin] - ID: 4
+[15-Aug-2025 03:32:41 Europe/Berlin] - Nombre: Armando
+[15-Aug-2025 03:32:41 Europe/Berlin] - Usuario: Admin2
+[15-Aug-2025 03:32:41 Europe/Berlin] - Rol: admin
+[15-Aug-2025 03:32:41 Europe/Berlin] - Hash almacenado: $2y$10$NmxNIveA43R14...
+[15-Aug-2025 03:32:41 Europe/Berlin] Verificando contraseña...
+[15-Aug-2025 03:32:41 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Admin2
+[15-Aug-2025 03:32:41 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[15-Aug-2025 03:32:41 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 4
+    [user_name] => Armando
+    [user_role] => admin
+    [login_time] => 1755221561
+)
+
+[15-Aug-2025 03:32:41 Europe/Berlin] ✅ Último acceso actualizado
+[15-Aug-2025 03:32:41 Europe/Berlin] 🚀 Redirigiendo a index.php
+[15-Aug-2025 03:32:41 Europe/Berlin] Acceso a login.php - Método GET
+[15-Aug-2025 03:32:45 Europe/Berlin] Acceso a login.php - Método GET
+[15-Aug-2025 03:32:51 Europe/Berlin] Acceso a login.php - Método GET
+[15-Aug-2025 03:32:55 Europe/Berlin] === INICIO DE SESIÓN ===
+[15-Aug-2025 03:32:55 Europe/Berlin] Usuario: Admin2
+[15-Aug-2025 03:32:55 Europe/Berlin] Password recibido: Sí (5 caracteres)
+[15-Aug-2025 03:32:55 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[15-Aug-2025 03:32:55 Europe/Berlin] Usuario encontrado en BD:
+[15-Aug-2025 03:32:55 Europe/Berlin] - ID: 4
+[15-Aug-2025 03:32:55 Europe/Berlin] - Nombre: Armando
+[15-Aug-2025 03:32:55 Europe/Berlin] - Usuario: Admin2
+[15-Aug-2025 03:32:55 Europe/Berlin] - Rol: admin
+[15-Aug-2025 03:32:55 Europe/Berlin] - Hash almacenado: $2y$10$NmxNIveA43R14...
+[15-Aug-2025 03:32:55 Europe/Berlin] Verificando contraseña...
+[15-Aug-2025 03:32:55 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Admin2
+[15-Aug-2025 03:32:55 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[15-Aug-2025 03:32:55 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 4
+    [user_name] => Armando
+    [user_role] => admin
+    [login_time] => 1755221575
+)
+
+[15-Aug-2025 03:32:55 Europe/Berlin] ✅ Último acceso actualizado
+[15-Aug-2025 03:32:55 Europe/Berlin] 🚀 Redirigiendo a index.php
+[15-Aug-2025 03:32:55 Europe/Berlin] Acceso a login.php - Método GET
+[15-Aug-2025 03:38:59 Europe/Berlin] Acceso a login.php - Método GET
+[15-Aug-2025 03:39:02 Europe/Berlin] === INICIO DE SESIÓN ===
+[15-Aug-2025 03:39:02 Europe/Berlin] Usuario: Admin2
+[15-Aug-2025 03:39:02 Europe/Berlin] Password recibido: Sí (5 caracteres)
+[15-Aug-2025 03:39:02 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[15-Aug-2025 03:39:02 Europe/Berlin] Usuario encontrado en BD:
+[15-Aug-2025 03:39:02 Europe/Berlin] - ID: 4
+[15-Aug-2025 03:39:02 Europe/Berlin] - Nombre: Armando
+[15-Aug-2025 03:39:02 Europe/Berlin] - Usuario: Admin2
+[15-Aug-2025 03:39:02 Europe/Berlin] - Rol: admin
+[15-Aug-2025 03:39:02 Europe/Berlin] - Hash almacenado: $2y$10$NmxNIveA43R14...
+[15-Aug-2025 03:39:02 Europe/Berlin] Verificando contraseña...
+[15-Aug-2025 03:39:02 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Admin2
+[15-Aug-2025 03:39:02 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[15-Aug-2025 03:39:02 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 4
+    [user_name] => Armando
+    [user_role] => admin
+    [login_time] => 1755221942
+)
+
+[15-Aug-2025 03:39:02 Europe/Berlin] ✅ Último acceso actualizado
+[15-Aug-2025 03:39:02 Europe/Berlin] 🚀 Redirigiendo a index.php
+[15-Aug-2025 03:39:03 Europe/Berlin] Acceso a login.php - Método GET
+[15-Aug-2025 03:39:08 Europe/Berlin] Acceso a login.php - Método GET
+[15-Aug-2025 03:39:13 Europe/Berlin] Acceso a login.php - Método GET
+[15-Aug-2025 03:42:31 Europe/Berlin] Acceso a login.php - Método GET
+[15-Aug-2025 03:42:35 Europe/Berlin] === INICIO DE SESIÓN ===
+[15-Aug-2025 03:42:35 Europe/Berlin] Usuario: Admin2
+[15-Aug-2025 03:42:35 Europe/Berlin] Password recibido: Sí (5 caracteres)
+[15-Aug-2025 03:42:35 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[15-Aug-2025 03:42:35 Europe/Berlin] Usuario encontrado en BD:
+[15-Aug-2025 03:42:35 Europe/Berlin] - ID: 4
+[15-Aug-2025 03:42:35 Europe/Berlin] - Nombre: Armando
+[15-Aug-2025 03:42:35 Europe/Berlin] - Usuario: Admin2
+[15-Aug-2025 03:42:35 Europe/Berlin] - Rol: admin
+[15-Aug-2025 03:42:35 Europe/Berlin] - Hash almacenado: $2y$10$NmxNIveA43R14...
+[15-Aug-2025 03:42:35 Europe/Berlin] Verificando contraseña...
+[15-Aug-2025 03:42:35 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Admin2
+[15-Aug-2025 03:42:35 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[15-Aug-2025 03:42:35 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 4
+    [user_name] => Armando
+    [user_role] => admin
+    [login_time] => 1755222155
+)
+
+[15-Aug-2025 03:42:35 Europe/Berlin] ✅ Último acceso actualizado
+[15-Aug-2025 03:42:35 Europe/Berlin] 🚀 Redirigiendo a index.php
+[15-Aug-2025 03:42:35 Europe/Berlin] Acceso a login.php - Método GET
+[15-Aug-2025 03:42:45 Europe/Berlin] === INICIO DE SESIÓN ===
+[15-Aug-2025 03:42:45 Europe/Berlin] Usuario: Ale
+[15-Aug-2025 03:42:45 Europe/Berlin] Password recibido: Sí (8 caracteres)
+[15-Aug-2025 03:42:45 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[15-Aug-2025 03:42:45 Europe/Berlin] Usuario encontrado en BD:
+[15-Aug-2025 03:42:45 Europe/Berlin] - ID: 2
+[15-Aug-2025 03:42:45 Europe/Berlin] - Nombre: Administrador Principal
+[15-Aug-2025 03:42:45 Europe/Berlin] - Usuario: Ale
+[15-Aug-2025 03:42:45 Europe/Berlin] - Rol: vendedor
+[15-Aug-2025 03:42:45 Europe/Berlin] - Hash almacenado: $2y$10$.firY8p3clavH...
+[15-Aug-2025 03:42:45 Europe/Berlin] Verificando contraseña...
+[15-Aug-2025 03:42:46 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Ale
+[15-Aug-2025 03:42:46 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[15-Aug-2025 03:42:46 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 2
+    [user_name] => Administrador Principal
+    [user_role] => vendedor
+    [login_time] => 1755222166
+)
+
+[15-Aug-2025 03:42:46 Europe/Berlin] ✅ Último acceso actualizado
+[15-Aug-2025 03:42:46 Europe/Berlin] 🚀 Redirigiendo a index.php
+[15-Aug-2025 03:42:46 Europe/Berlin] Acceso a login.php - Método GET
+[15-Aug-2025 03:42:49 Europe/Berlin] Acceso a login.php - Método GET
+[15-Aug-2025 03:43:13 Europe/Berlin] === INICIO DE SESIÓN ===
+[15-Aug-2025 03:43:13 Europe/Berlin] Usuario: Admin2
+[15-Aug-2025 03:43:13 Europe/Berlin] Password recibido: Sí (5 caracteres)
+[15-Aug-2025 03:43:13 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[15-Aug-2025 03:43:13 Europe/Berlin] Usuario encontrado en BD:
+[15-Aug-2025 03:43:13 Europe/Berlin] - ID: 4
+[15-Aug-2025 03:43:13 Europe/Berlin] - Nombre: Armando
+[15-Aug-2025 03:43:13 Europe/Berlin] - Usuario: Admin2
+[15-Aug-2025 03:43:13 Europe/Berlin] - Rol: admin
+[15-Aug-2025 03:43:13 Europe/Berlin] - Hash almacenado: $2y$10$NmxNIveA43R14...
+[15-Aug-2025 03:43:13 Europe/Berlin] Verificando contraseña...
+[15-Aug-2025 03:43:13 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Admin2
+[15-Aug-2025 03:43:13 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[15-Aug-2025 03:43:13 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 4
+    [user_name] => Armando
+    [user_role] => admin
+    [login_time] => 1755222193
+)
+
+[15-Aug-2025 03:43:13 Europe/Berlin] ✅ Último acceso actualizado
+[15-Aug-2025 03:43:13 Europe/Berlin] 🚀 Redirigiendo a index.php
+[15-Aug-2025 03:43:13 Europe/Berlin] Acceso a login.php - Método GET
+[15-Aug-2025 03:47:10 Europe/Berlin] PHP Parse error:  syntax error, unexpected single-quoted string "samesite", expecting "]" in C:\xampp\htdocs\sistema_ventas\includes\config.php on line 28
+[15-Aug-2025 03:49:09 Europe/Berlin] === INICIO DE SESIÓN ===
+[15-Aug-2025 03:49:09 Europe/Berlin] Usuario: Admin2
+[15-Aug-2025 03:49:09 Europe/Berlin] Password recibido: Sí (5 caracteres)
+[15-Aug-2025 03:49:09 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[15-Aug-2025 03:49:09 Europe/Berlin] Usuario encontrado en BD:
+[15-Aug-2025 03:49:09 Europe/Berlin] - ID: 4
+[15-Aug-2025 03:49:09 Europe/Berlin] - Nombre: Armando
+[15-Aug-2025 03:49:09 Europe/Berlin] - Usuario: Admin2
+[15-Aug-2025 03:49:09 Europe/Berlin] - Rol: admin
+[15-Aug-2025 03:49:09 Europe/Berlin] - Hash almacenado: $2y$10$NmxNIveA43R14...
+[15-Aug-2025 03:49:09 Europe/Berlin] Verificando contraseña...
+[15-Aug-2025 03:49:09 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Admin2
+[15-Aug-2025 03:49:09 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[15-Aug-2025 03:49:09 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 4
+    [user_name] => Armando
+    [user_role] => admin
+    [login_time] => 1755222549
+)
+
+[15-Aug-2025 03:49:09 Europe/Berlin] ✅ Último acceso actualizado
+[15-Aug-2025 03:49:09 Europe/Berlin] 🚀 Redirigiendo a index.php
+[15-Aug-2025 03:49:09 Europe/Berlin] Acceso a login.php - Método GET
+[15-Aug-2025 03:49:12 Europe/Berlin] Acceso a login.php - Método GET
+[15-Aug-2025 03:49:24 Europe/Berlin] === INICIO DE SESIÓN ===
+[15-Aug-2025 03:49:24 Europe/Berlin] Usuario: Admin2
+[15-Aug-2025 03:49:24 Europe/Berlin] Password recibido: Sí (5 caracteres)
+[15-Aug-2025 03:49:24 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[15-Aug-2025 03:49:24 Europe/Berlin] Usuario encontrado en BD:
+[15-Aug-2025 03:49:24 Europe/Berlin] - ID: 4
+[15-Aug-2025 03:49:24 Europe/Berlin] - Nombre: Armando
+[15-Aug-2025 03:49:24 Europe/Berlin] - Usuario: Admin2
+[15-Aug-2025 03:49:24 Europe/Berlin] - Rol: admin
+[15-Aug-2025 03:49:24 Europe/Berlin] - Hash almacenado: $2y$10$NmxNIveA43R14...
+[15-Aug-2025 03:49:24 Europe/Berlin] Verificando contraseña...
+[15-Aug-2025 03:49:24 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Admin2
+[15-Aug-2025 03:49:24 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[15-Aug-2025 03:49:24 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 4
+    [user_name] => Armando
+    [user_role] => admin
+    [login_time] => 1755222564
+)
+
+[15-Aug-2025 03:49:24 Europe/Berlin] ✅ Último acceso actualizado
+[15-Aug-2025 03:49:24 Europe/Berlin] 🚀 Redirigiendo a index.php
+[15-Aug-2025 03:49:24 Europe/Berlin] Acceso a login.php - Método GET
+[15-Aug-2025 03:50:10 Europe/Berlin] === INICIO DE SESIÓN ===
+[15-Aug-2025 03:50:10 Europe/Berlin] Usuario: Ale
+[15-Aug-2025 03:50:10 Europe/Berlin] Password recibido: Sí (8 caracteres)
+[15-Aug-2025 03:50:10 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[15-Aug-2025 03:50:10 Europe/Berlin] Usuario encontrado en BD:
+[15-Aug-2025 03:50:10 Europe/Berlin] - ID: 2
+[15-Aug-2025 03:50:10 Europe/Berlin] - Nombre: Administrador Principal
+[15-Aug-2025 03:50:10 Europe/Berlin] - Usuario: Ale
+[15-Aug-2025 03:50:10 Europe/Berlin] - Rol: vendedor
+[15-Aug-2025 03:50:10 Europe/Berlin] - Hash almacenado: $2y$10$.firY8p3clavH...
+[15-Aug-2025 03:50:10 Europe/Berlin] Verificando contraseña...
+[15-Aug-2025 03:50:10 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Ale
+[15-Aug-2025 03:50:10 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[15-Aug-2025 03:50:10 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 2
+    [user_name] => Administrador Principal
+    [user_role] => vendedor
+    [login_time] => 1755222610
+)
+
+[15-Aug-2025 03:50:10 Europe/Berlin] ✅ Último acceso actualizado
+[15-Aug-2025 03:50:10 Europe/Berlin] 🚀 Redirigiendo a index.php
+[15-Aug-2025 03:50:10 Europe/Berlin] Acceso a login.php - Método GET
+[15-Aug-2025 03:50:39 Europe/Berlin] === INICIO DE SESIÓN ===
+[15-Aug-2025 03:50:39 Europe/Berlin] Usuario: Ale
+[15-Aug-2025 03:50:39 Europe/Berlin] Password recibido: Sí (8 caracteres)
+[15-Aug-2025 03:50:39 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[15-Aug-2025 03:50:39 Europe/Berlin] Usuario encontrado en BD:
+[15-Aug-2025 03:50:39 Europe/Berlin] - ID: 2
+[15-Aug-2025 03:50:39 Europe/Berlin] - Nombre: Administrador Principal
+[15-Aug-2025 03:50:39 Europe/Berlin] - Usuario: Ale
+[15-Aug-2025 03:50:39 Europe/Berlin] - Rol: vendedor
+[15-Aug-2025 03:50:39 Europe/Berlin] - Hash almacenado: $2y$10$.firY8p3clavH...
+[15-Aug-2025 03:50:39 Europe/Berlin] Verificando contraseña...
+[15-Aug-2025 03:50:39 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Ale
+[15-Aug-2025 03:50:39 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[15-Aug-2025 03:50:39 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 2
+    [user_name] => Administrador Principal
+    [user_role] => vendedor
+    [login_time] => 1755222639
+)
+
+[15-Aug-2025 03:50:39 Europe/Berlin] ✅ Último acceso actualizado
+[15-Aug-2025 03:50:39 Europe/Berlin] 🚀 Redirigiendo a index.php
+[15-Aug-2025 03:50:39 Europe/Berlin] Acceso a login.php - Método GET
+[15-Aug-2025 03:52:10 Europe/Berlin] === INICIO DE SESIÓN ===
+[15-Aug-2025 03:52:10 Europe/Berlin] Usuario: Admin2
+[15-Aug-2025 03:52:10 Europe/Berlin] Password recibido: Sí (5 caracteres)
+[15-Aug-2025 03:52:10 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[15-Aug-2025 03:52:10 Europe/Berlin] Usuario encontrado en BD:
+[15-Aug-2025 03:52:10 Europe/Berlin] - ID: 4
+[15-Aug-2025 03:52:10 Europe/Berlin] - Nombre: Armando
+[15-Aug-2025 03:52:10 Europe/Berlin] - Usuario: Admin2
+[15-Aug-2025 03:52:10 Europe/Berlin] - Rol: admin
+[15-Aug-2025 03:52:10 Europe/Berlin] - Hash almacenado: $2y$10$NmxNIveA43R14...
+[15-Aug-2025 03:52:10 Europe/Berlin] Verificando contraseña...
+[15-Aug-2025 03:52:10 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Admin2
+[15-Aug-2025 03:52:10 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[15-Aug-2025 03:52:10 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 4
+    [user_name] => Armando
+    [user_role] => admin
+    [login_time] => 1755222730
+)
+
+[15-Aug-2025 03:52:10 Europe/Berlin] ✅ Último acceso actualizado
+[15-Aug-2025 03:52:10 Europe/Berlin] 🚀 Redirigiendo a index.php
+[15-Aug-2025 03:52:21 Europe/Berlin] Acceso a login.php - Método GET
+[15-Aug-2025 03:52:24 Europe/Berlin] === INICIO DE SESIÓN ===
+[15-Aug-2025 03:52:24 Europe/Berlin] Usuario: Admin2
+[15-Aug-2025 03:52:24 Europe/Berlin] Password recibido: Sí (5 caracteres)
+[15-Aug-2025 03:52:24 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[15-Aug-2025 03:52:24 Europe/Berlin] Usuario encontrado en BD:
+[15-Aug-2025 03:52:24 Europe/Berlin] - ID: 4
+[15-Aug-2025 03:52:24 Europe/Berlin] - Nombre: Armando
+[15-Aug-2025 03:52:24 Europe/Berlin] - Usuario: Admin2
+[15-Aug-2025 03:52:24 Europe/Berlin] - Rol: admin
+[15-Aug-2025 03:52:24 Europe/Berlin] - Hash almacenado: $2y$10$NmxNIveA43R14...
+[15-Aug-2025 03:52:24 Europe/Berlin] Verificando contraseña...
+[15-Aug-2025 03:52:25 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Admin2
+[15-Aug-2025 03:52:25 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[15-Aug-2025 03:52:25 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 4
+    [user_name] => Armando
+    [user_role] => admin
+    [login_time] => 1755222745
+)
+
+[15-Aug-2025 03:52:25 Europe/Berlin] ✅ Último acceso actualizado
+[15-Aug-2025 03:52:25 Europe/Berlin] 🚀 Redirigiendo a index.php
+[15-Aug-2025 03:52:31 Europe/Berlin] Acceso a login.php - Método GET
+[15-Aug-2025 03:52:35 Europe/Berlin] === INICIO DE SESIÓN ===
+[15-Aug-2025 03:52:35 Europe/Berlin] Usuario: Admin2
+[15-Aug-2025 03:52:35 Europe/Berlin] Password recibido: Sí (5 caracteres)
+[15-Aug-2025 03:52:35 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[15-Aug-2025 03:52:35 Europe/Berlin] Usuario encontrado en BD:
+[15-Aug-2025 03:52:35 Europe/Berlin] - ID: 4
+[15-Aug-2025 03:52:35 Europe/Berlin] - Nombre: Armando
+[15-Aug-2025 03:52:35 Europe/Berlin] - Usuario: Admin2
+[15-Aug-2025 03:52:35 Europe/Berlin] - Rol: admin
+[15-Aug-2025 03:52:35 Europe/Berlin] - Hash almacenado: $2y$10$NmxNIveA43R14...
+[15-Aug-2025 03:52:35 Europe/Berlin] Verificando contraseña...
+[15-Aug-2025 03:52:35 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Admin2
+[15-Aug-2025 03:52:35 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[15-Aug-2025 03:52:35 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 4
+    [user_name] => Armando
+    [user_role] => admin
+    [login_time] => 1755222755
+)
+
+[15-Aug-2025 03:52:35 Europe/Berlin] ✅ Último acceso actualizado
+[15-Aug-2025 03:52:35 Europe/Berlin] 🚀 Redirigiendo a index.php
+[15-Aug-2025 03:52:36 Europe/Berlin] Acceso a login.php - Método GET
+[15-Aug-2025 03:52:39 Europe/Berlin] === INICIO DE SESIÓN ===
+[15-Aug-2025 03:52:39 Europe/Berlin] Usuario: Ale
+[15-Aug-2025 03:52:39 Europe/Berlin] Password recibido: Sí (8 caracteres)
+[15-Aug-2025 03:52:39 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[15-Aug-2025 03:52:39 Europe/Berlin] Usuario encontrado en BD:
+[15-Aug-2025 03:52:39 Europe/Berlin] - ID: 2
+[15-Aug-2025 03:52:39 Europe/Berlin] - Nombre: Administrador Principal
+[15-Aug-2025 03:52:39 Europe/Berlin] - Usuario: Ale
+[15-Aug-2025 03:52:39 Europe/Berlin] - Rol: vendedor
+[15-Aug-2025 03:52:39 Europe/Berlin] - Hash almacenado: $2y$10$.firY8p3clavH...
+[15-Aug-2025 03:52:39 Europe/Berlin] Verificando contraseña...
+[15-Aug-2025 03:52:39 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Ale
+[15-Aug-2025 03:52:39 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[15-Aug-2025 03:52:39 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 2
+    [user_name] => Administrador Principal
+    [user_role] => vendedor
+    [login_time] => 1755222759
+)
+
+[15-Aug-2025 03:52:39 Europe/Berlin] ✅ Último acceso actualizado
+[15-Aug-2025 03:52:39 Europe/Berlin] 🚀 Redirigiendo a index.php
+[15-Aug-2025 03:52:58 Europe/Berlin] Acceso a login.php - Método GET
+[15-Aug-2025 03:53:05 Europe/Berlin] === INICIO DE SESIÓN ===
+[15-Aug-2025 03:53:05 Europe/Berlin] Usuario: Admin2
+[15-Aug-2025 03:53:05 Europe/Berlin] Password recibido: Sí (5 caracteres)
+[15-Aug-2025 03:53:05 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[15-Aug-2025 03:53:05 Europe/Berlin] Usuario encontrado en BD:
+[15-Aug-2025 03:53:05 Europe/Berlin] - ID: 4
+[15-Aug-2025 03:53:05 Europe/Berlin] - Nombre: Armando
+[15-Aug-2025 03:53:05 Europe/Berlin] - Usuario: Admin2
+[15-Aug-2025 03:53:05 Europe/Berlin] - Rol: admin
+[15-Aug-2025 03:53:05 Europe/Berlin] - Hash almacenado: $2y$10$NmxNIveA43R14...
+[15-Aug-2025 03:53:05 Europe/Berlin] Verificando contraseña...
+[15-Aug-2025 03:53:06 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Admin2
+[15-Aug-2025 03:53:06 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[15-Aug-2025 03:53:06 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 4
+    [user_name] => Armando
+    [user_role] => admin
+    [login_time] => 1755222786
+)
+
+[15-Aug-2025 03:53:06 Europe/Berlin] ✅ Último acceso actualizado
+[15-Aug-2025 03:53:06 Europe/Berlin] 🚀 Redirigiendo a index.php
+[15-Aug-2025 03:54:24 Europe/Berlin] Acceso a login.php - Método GET
+[15-Aug-2025 03:54:27 Europe/Berlin] === INICIO DE SESIÓN ===
+[15-Aug-2025 03:54:27 Europe/Berlin] Usuario: Admin2
+[15-Aug-2025 03:54:27 Europe/Berlin] Password recibido: Sí (5 caracteres)
+[15-Aug-2025 03:54:27 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[15-Aug-2025 03:54:27 Europe/Berlin] Usuario encontrado en BD:
+[15-Aug-2025 03:54:27 Europe/Berlin] - ID: 4
+[15-Aug-2025 03:54:27 Europe/Berlin] - Nombre: Armando
+[15-Aug-2025 03:54:27 Europe/Berlin] - Usuario: Admin2
+[15-Aug-2025 03:54:27 Europe/Berlin] - Rol: admin
+[15-Aug-2025 03:54:27 Europe/Berlin] - Hash almacenado: $2y$10$NmxNIveA43R14...
+[15-Aug-2025 03:54:27 Europe/Berlin] Verificando contraseña...
+[15-Aug-2025 03:54:27 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Admin2
+[15-Aug-2025 03:54:27 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[15-Aug-2025 03:54:27 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 4
+    [user_name] => Armando
+    [user_role] => admin
+    [login_time] => 1755222867
+)
+
+[15-Aug-2025 03:54:27 Europe/Berlin] ✅ Último acceso actualizado
+[15-Aug-2025 03:54:27 Europe/Berlin] 🚀 Redirigiendo a index.php
+[15-Aug-2025 03:55:03 Europe/Berlin] Acceso a login.php - Método GET
+[15-Aug-2025 03:55:06 Europe/Berlin] === INICIO DE SESIÓN ===
+[15-Aug-2025 03:55:06 Europe/Berlin] Usuario: Admin2
+[15-Aug-2025 03:55:06 Europe/Berlin] Password recibido: Sí (5 caracteres)
+[15-Aug-2025 03:55:06 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[15-Aug-2025 03:55:06 Europe/Berlin] Usuario encontrado en BD:
+[15-Aug-2025 03:55:06 Europe/Berlin] - ID: 4
+[15-Aug-2025 03:55:06 Europe/Berlin] - Nombre: Armando
+[15-Aug-2025 03:55:06 Europe/Berlin] - Usuario: Admin2
+[15-Aug-2025 03:55:06 Europe/Berlin] - Rol: admin
+[15-Aug-2025 03:55:06 Europe/Berlin] - Hash almacenado: $2y$10$NmxNIveA43R14...
+[15-Aug-2025 03:55:06 Europe/Berlin] Verificando contraseña...
+[15-Aug-2025 03:55:06 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Admin2
+[15-Aug-2025 03:55:06 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[15-Aug-2025 03:55:06 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 4
+    [user_name] => Armando
+    [user_role] => admin
+    [login_time] => 1755222906
+)
+
+[15-Aug-2025 03:55:06 Europe/Berlin] ✅ Último acceso actualizado
+[15-Aug-2025 03:55:06 Europe/Berlin] 🚀 Redirigiendo a index.php
+[15-Aug-2025 03:55:06 Europe/Berlin] Acceso a login.php - Método GET
+[29-Aug-2025 01:00:06 Europe/Berlin] Acceso a login.php - Método GET
+[29-Aug-2025 01:00:30 Europe/Berlin] === INICIO DE SESIÓN ===
+[29-Aug-2025 01:00:30 Europe/Berlin] Usuario: Admin2
+[29-Aug-2025 01:00:30 Europe/Berlin] Password recibido: Sí (5 caracteres)
+[29-Aug-2025 01:00:30 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[29-Aug-2025 01:00:30 Europe/Berlin] Usuario encontrado en BD:
+[29-Aug-2025 01:00:30 Europe/Berlin] - ID: 4
+[29-Aug-2025 01:00:30 Europe/Berlin] - Nombre: Armando
+[29-Aug-2025 01:00:30 Europe/Berlin] - Usuario: Admin2
+[29-Aug-2025 01:00:30 Europe/Berlin] - Rol: admin
+[29-Aug-2025 01:00:30 Europe/Berlin] - Hash almacenado: $2y$10$NmxNIveA43R14...
+[29-Aug-2025 01:00:30 Europe/Berlin] Verificando contraseña...
+[29-Aug-2025 01:00:30 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Admin2
+[29-Aug-2025 01:00:30 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[29-Aug-2025 01:00:30 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 4
+    [user_name] => Armando
+    [user_role] => admin
+    [login_time] => 1756422030
+)
+
+[29-Aug-2025 01:00:30 Europe/Berlin] ✅ Último acceso actualizado
+[29-Aug-2025 01:00:30 Europe/Berlin] 🚀 Redirigiendo a index.php
+[29-Aug-2025 03:15:33 Europe/Berlin] Acceso a login.php - Método GET
+[31-Aug-2025 01:54:18 Europe/Berlin] Acceso a login.php - Método GET
+[31-Aug-2025 01:54:27 Europe/Berlin] Acceso a login.php - Método GET
+[31-Aug-2025 01:54:45 Europe/Berlin] Acceso a login.php - Método GET
+[31-Aug-2025 01:54:53 Europe/Berlin] === INICIO DE SESIÓN ===
+[31-Aug-2025 01:54:53 Europe/Berlin] Usuario: Admin2
+[31-Aug-2025 01:54:53 Europe/Berlin] Password recibido: Sí (5 caracteres)
+[31-Aug-2025 01:54:53 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[31-Aug-2025 01:54:53 Europe/Berlin] Usuario encontrado en BD:
+[31-Aug-2025 01:54:53 Europe/Berlin] - ID: 4
+[31-Aug-2025 01:54:53 Europe/Berlin] - Nombre: Armando
+[31-Aug-2025 01:54:53 Europe/Berlin] - Usuario: Admin2
+[31-Aug-2025 01:54:53 Europe/Berlin] - Rol: admin
+[31-Aug-2025 01:54:53 Europe/Berlin] - Hash almacenado: $2y$10$NmxNIveA43R14...
+[31-Aug-2025 01:54:53 Europe/Berlin] Verificando contraseña...
+[31-Aug-2025 01:54:53 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Admin2
+[31-Aug-2025 01:54:53 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[31-Aug-2025 01:54:53 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 4
+    [user_name] => Armando
+    [user_role] => admin
+    [login_time] => 1756598093
+)
+
+[31-Aug-2025 01:54:53 Europe/Berlin] ✅ Último acceso actualizado
+[31-Aug-2025 01:54:53 Europe/Berlin] 🚀 Redirigiendo a index.php
+[31-Aug-2025 03:58:28 Europe/Berlin] Acceso a login.php - Método GET
+[31-Aug-2025 04:26:18 Europe/Berlin] Acceso a login.php - Método GET
+[31-Aug-2025 04:26:20 Europe/Berlin] === INICIO DE SESIÓN ===
+[31-Aug-2025 04:26:20 Europe/Berlin] Usuario: Admin2
+[31-Aug-2025 04:26:20 Europe/Berlin] Password recibido: Sí (5 caracteres)
+[31-Aug-2025 04:26:20 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[31-Aug-2025 04:26:20 Europe/Berlin] Usuario encontrado en BD:
+[31-Aug-2025 04:26:20 Europe/Berlin] - ID: 4
+[31-Aug-2025 04:26:20 Europe/Berlin] - Nombre: Armando
+[31-Aug-2025 04:26:20 Europe/Berlin] - Usuario: Admin2
+[31-Aug-2025 04:26:20 Europe/Berlin] - Rol: admin
+[31-Aug-2025 04:26:20 Europe/Berlin] - Hash almacenado: $2y$10$NmxNIveA43R14...
+[31-Aug-2025 04:26:20 Europe/Berlin] Verificando contraseña...
+[31-Aug-2025 04:26:20 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Admin2
+[31-Aug-2025 04:26:20 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[31-Aug-2025 04:26:20 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 4
+    [user_name] => Armando
+    [user_role] => admin
+    [login_time] => 1756607180
+)
+
+[31-Aug-2025 04:26:20 Europe/Berlin] ✅ Último acceso actualizado
+[31-Aug-2025 04:26:20 Europe/Berlin] 🚀 Redirigiendo a index.php
+[31-Aug-2025 06:35:05 Europe/Berlin] Acceso a login.php - Método GET
+[31-Aug-2025 06:35:07 Europe/Berlin] === INICIO DE SESIÓN ===
+[31-Aug-2025 06:35:07 Europe/Berlin] Usuario: Admin2
+[31-Aug-2025 06:35:07 Europe/Berlin] Password recibido: Sí (5 caracteres)
+[31-Aug-2025 06:35:07 Europe/Berlin] Consulta ejecutada. Resultados encontrados: 1
+[31-Aug-2025 06:35:07 Europe/Berlin] Usuario encontrado en BD:
+[31-Aug-2025 06:35:07 Europe/Berlin] - ID: 4
+[31-Aug-2025 06:35:07 Europe/Berlin] - Nombre: Armando
+[31-Aug-2025 06:35:07 Europe/Berlin] - Usuario: Admin2
+[31-Aug-2025 06:35:07 Europe/Berlin] - Rol: admin
+[31-Aug-2025 06:35:07 Europe/Berlin] - Hash almacenado: $2y$10$NmxNIveA43R14...
+[31-Aug-2025 06:35:07 Europe/Berlin] Verificando contraseña...
+[31-Aug-2025 06:35:07 Europe/Berlin] ✅ Contraseña VÁLIDA para usuario: Admin2
+[31-Aug-2025 06:35:07 Europe/Berlin] ✅ Sesión iniciada exitosamente:
+[31-Aug-2025 06:35:07 Europe/Berlin] Variables de sesión: Array
+(
+    [user_id] => 4
+    [user_name] => Armando
+    [user_role] => admin
+    [login_time] => 1756614907
+)
+
+[31-Aug-2025 06:35:07 Europe/Berlin] ✅ Último acceso actualizado
+[31-Aug-2025 06:35:07 Europe/Berlin] 🚀 Redirigiendo a index.php
