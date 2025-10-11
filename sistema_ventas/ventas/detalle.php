@@ -2,23 +2,31 @@
 include('../includes/header.php');
 require_once('../includes/conexion.php');
 
-$venta_id = $_GET['id'];
+$venta_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
 // Obtener información de la venta
-$sql_venta = "SELECT v.*, c.nombre AS cliente, c.telefono, c.direccion
-              FROM ventas v
-              JOIN clientes c ON v.cliente_id = c.id
-              WHERE v.id = ?";
+$sql_venta = "SELECT s.*, c.Nombre AS cliente, c.Telefono, c.Direccion,
+              suc.Nombre as Sucursal, fp.FormaPago
+              FROM salida s
+              JOIN clientes c ON s.NroCliente = c.NroCliente
+              LEFT JOIN sucursal suc ON s.NroSucursal = suc.NroSucursal
+              LEFT JOIN formapago fp ON s.IdFormaPago = fp.IdFormaPago
+              WHERE s.IdSalida = ?";
 $stmt_venta = $conexion->prepare($sql_venta);
 $stmt_venta->bind_param("i", $venta_id);
 $stmt_venta->execute();
 $venta = $stmt_venta->get_result()->fetch_assoc();
 
+if (!$venta) {
+    header("Location: historial.php?error=Venta no encontrada");
+    exit;
+}
+
 // Obtener detalles de la venta
-$sql_detalle = "SELECT vd.*, p.nombre AS producto 
-                FROM ventas_detalle vd
-                JOIN productos p ON vd.producto_id = p.id
-                WHERE vd.venta_id = ?";
+$sql_detalle = "SELECT ds.*, p.Descripcion AS producto 
+                FROM detallesalida ds
+                JOIN productos p ON ds.CodigoNum = p.CodigoNum
+                WHERE ds.IdSalida = ?";
 $stmt_detalle = $conexion->prepare($sql_detalle);
 $stmt_detalle->bind_param("i", $venta_id);
 $stmt_detalle->execute();
@@ -33,7 +41,7 @@ $detalles_array = [];
 while ($detalle = $detalles->fetch_assoc()) {
     $detalles_array[] = $detalle;
     $total_productos++;
-    $cantidad_total += $detalle['cantidad'];
+    $cantidad_total += $detalle['Cantidad'];
 }
 ?>
 
@@ -272,19 +280,19 @@ while ($detalle = $detalles->fetch_assoc()) {
         </div>
         <div class="col-md-3">
             <div class="stat-item">
-                <div class="stat-number"><?= $cantidad_total ?></div>
+                <div class="stat-number"><?= number_format($cantidad_total, 2) ?></div>
                 <div class="stat-label">Cantidad Total</div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-item">
-                <div class="stat-number">$<?= number_format($venta['total'], 2) ?></div>
+                <div class="stat-number">$<?= number_format($venta['Total'], 2) ?></div>
                 <div class="stat-label">Total Venta</div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-item">
-                <div class="stat-number"><?= date('d/m/Y', strtotime($venta['fecha'])) ?></div>
+                <div class="stat-number"><?= date('d/m/Y', strtotime($venta['Fecha'])) ?></div>
                 <div class="stat-label">Fecha</div>
             </div>
         </div>
@@ -315,7 +323,7 @@ while ($detalle = $detalles->fetch_assoc()) {
                     </div>
                     <div class="info-content">
                         <div class="info-label">Teléfono</div>
-                        <div class="info-value"><?= htmlspecialchars($venta['telefono'] ?: 'No especificado') ?></div>
+                        <div class="info-value"><?= htmlspecialchars($venta['Telefono'] ?: 'No especificado') ?></div>
                     </div>
                 </div>
                 
@@ -325,7 +333,7 @@ while ($detalle = $detalles->fetch_assoc()) {
                     </div>
                     <div class="info-content">
                         <div class="info-label">Dirección</div>
-                        <div class="info-value"><?= htmlspecialchars($venta['direccion'] ?: 'No especificado') ?></div>
+                        <div class="info-value"><?= htmlspecialchars($venta['Direccion'] ?: 'No especificado') ?></div>
                     </div>
                 </div>
             </div>
@@ -344,7 +352,27 @@ while ($detalle = $detalles->fetch_assoc()) {
                     </div>
                     <div class="info-content">
                         <div class="info-label">Fecha y Hora</div>
-                        <div class="info-value"><?= date('d/m/Y H:i', strtotime($venta['fecha'])) ?></div>
+                        <div class="info-value"><?= date('d/m/Y H:i', strtotime($venta['Fecha'])) ?></div>
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-icon" style="background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);">
+                        <i class="bi bi-shop"></i>
+                    </div>
+                    <div class="info-content">
+                        <div class="info-label">Sucursal</div>
+                        <div class="info-value"><?= htmlspecialchars($venta['Sucursal'] ?? 'No especificado') ?></div>
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-icon" style="background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);">
+                        <i class="bi bi-credit-card"></i>
+                    </div>
+                    <div class="info-content">
+                        <div class="info-label">Forma de Pago</div>
+                        <div class="info-value"><?= htmlspecialchars($venta['FormaPago'] ?? 'No especificado') ?></div>
                     </div>
                 </div>
                 
@@ -355,19 +383,7 @@ while ($detalle = $detalles->fetch_assoc()) {
                     <div class="info-content">
                         <div class="info-label">Total de la Venta</div>
                         <div class="info-value">
-                            <span class="total-display">$<?= number_format($venta['total'], 2) ?></span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="info-item">
-                    <div class="info-icon" style="background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);">
-                        <i class="bi bi-check-circle"></i>
-                    </div>
-                    <div class="info-content">
-                        <div class="info-label">Estado</div>
-                        <div class="info-value">
-                            <span class="badge bg-success">Completada</span>
+                            <span class="total-display">$<?= number_format($venta['Total'], 2) ?></span>
                         </div>
                     </div>
                 </div>
@@ -404,13 +420,13 @@ while ($detalle = $detalles->fetch_assoc()) {
                             </div>
                         </td>
                         <td class="text-center">
-                            <span class="price-badge">$<?= number_format($detalle['precio_unitario'], 2) ?></span>
+                            <span class="price-badge">$<?= number_format($detalle['Preciounidad'], 2) ?></span>
                         </td>
                         <td class="text-center">
-                            <span class="quantity-badge"><?= $detalle['cantidad'] ?></span>
+                            <span class="quantity-badge"><?= number_format($detalle['Cantidad'], 2) ?></span>
                         </td>
                         <td class="text-end">
-                            <strong style="color: #28a745; font-size: 1.1rem;">$<?= number_format($detalle['precio_unitario'] * $detalle['cantidad'], 2) ?></strong>
+                            <strong style="color: #28a745; font-size: 1.1rem;">$<?= number_format($detalle['Totalin'], 2) ?></strong>
                         </td>
                     </tr>
                     <?php endforeach; ?>
@@ -421,7 +437,7 @@ while ($detalle = $detalles->fetch_assoc()) {
                             Total de la Venta:
                         </td>
                         <td class="text-end" style="padding: 1.5rem;">
-                            <span class="total-display" style="font-size: 1.3rem;">$<?= number_format($venta['total'], 2) ?></span>
+                            <span class="total-display" style="font-size: 1.3rem;">$<?= number_format($venta['Total'], 2) ?></span>
                         </td>
                     </tr>
                 </tfoot>
@@ -429,6 +445,39 @@ while ($detalle = $detalles->fetch_assoc()) {
         </div>
     </div>
 </div>
+
+<!-- Información adicional de impuestos -->
+<?php if ($venta['Iva'] > 0 || $venta['Iva5'] > 0 || $venta['Exenta'] > 0): ?>
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card" style="border: none; border-radius: 15px; background: linear-gradient(135deg, #f8fff9 0%, #e8f5e8 100%);">
+            <div class="card-body">
+                <h5 class="mb-3"><i class="bi bi-calculator me-2"></i>Desglose de Impuestos</h5>
+                <div class="row text-center">
+                    <?php if ($venta['Exenta'] > 0): ?>
+                    <div class="col-md-4">
+                        <h6 class="text-muted">Exentas</h6>
+                        <h4 class="text-success">$<?= number_format($venta['Exenta'], 2) ?></h4>
+                    </div>
+                    <?php endif; ?>
+                    <?php if ($venta['Iva5'] > 0): ?>
+                    <div class="col-md-4">
+                        <h6 class="text-muted">IVA 5%</h6>
+                        <h4 class="text-success">$<?= number_format($venta['Iva5'], 2) ?></h4>
+                    </div>
+                    <?php endif; ?>
+                    <?php if ($venta['Iva'] > 0): ?>
+                    <div class="col-md-4">
+                        <h6 class="text-muted">IVA 10%</h6>
+                        <h4 class="text-success">$<?= number_format($venta['Iva'], 2) ?></h4>
+                    </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
 
 <!-- Botón de regreso con estilo -->
 <div class="text-center mt-4 mb-4">
@@ -455,17 +504,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // Efecto de conteo para los números
     const statNumbers = document.querySelectorAll('.stat-number');
     statNumbers.forEach(stat => {
-        const finalValue = stat.textContent;
+        const finalValue = stat.textContent.replace(/[^0-9.]/g, '');
         if (!isNaN(finalValue) && finalValue !== '') {
             let currentValue = 0;
-            const increment = Math.ceil(finalValue / 20);
+            const increment = Math.ceil(parseFloat(finalValue) / 20);
             const timer = setInterval(() => {
                 currentValue += increment;
-                if (currentValue >= finalValue) {
-                    currentValue = finalValue;
+                if (currentValue >= parseFloat(finalValue)) {
+                    stat.textContent = stat.textContent; // Restore original
                     clearInterval(timer);
                 }
-                stat.textContent = currentValue;
             }, 50);
         }
     });
