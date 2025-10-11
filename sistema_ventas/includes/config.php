@@ -84,7 +84,7 @@ function conectarDB() {
     $host = "localhost";
     $user = "root";
     $password = "admin043656";
-    $database = "sistema_ventas";
+    $database = "datos";
 
     $conexion = new mysqli($host, $user, $password, $database);
     $conexion->set_charset("utf8mb4");
