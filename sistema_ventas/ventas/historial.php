@@ -1,7 +1,7 @@
 <?php
 require_once(__DIR__ . '/../includes/config.php');
 requireAuth();
-require_once(__DIR__ . '/../includes/conexion.php'); // Conexión a DB
+require_once(__DIR__ . '/../includes/conexion.php');
 
 include(__DIR__ . '/../includes/header.php');
 
@@ -11,33 +11,33 @@ $fecha_fin = isset($_GET['fecha_fin']) ? $_GET['fecha_fin'] : '';
 $cliente_id = isset($_GET['cliente_id']) ? intval($_GET['cliente_id']) : 0;
 
 // Construir consulta con filtros
-$sql = "SELECT v.id, c.nombre AS cliente, v.fecha, v.total 
-        FROM ventas v
-        INNER JOIN clientes c ON v.cliente_id = c.id
-        WHERE 1=1";
+$sql = "SELECT s.IdSalida, c.Nombre AS cliente, s.Fecha, s.Total 
+        FROM salida s
+        INNER JOIN clientes c ON s.NroCliente = c.NroCliente
+        WHERE s.Anulado = 0";
 
 $params = [];
 $types = '';
 
 if (!empty($fecha_inicio)) {
-    $sql .= " AND DATE(v.fecha) >= ?";
+    $sql .= " AND DATE(s.Fecha) >= ?";
     $params[] = $fecha_inicio;
     $types .= 's';
 }
 
 if (!empty($fecha_fin)) {
-    $sql .= " AND DATE(v.fecha) <= ?";
+    $sql .= " AND DATE(s.Fecha) <= ?";
     $params[] = $fecha_fin;
     $types .= 's';
 }
 
 if ($cliente_id > 0) {
-    $sql .= " AND v.cliente_id = ?";
+    $sql .= " AND s.NroCliente = ?";
     $params[] = $cliente_id;
     $types .= 'i';
 }
 
-$sql .= " ORDER BY v.fecha DESC";
+$sql .= " ORDER BY s.Fecha DESC";
 
 // Preparar y ejecutar consulta
 $stmt = $conexion->prepare($sql);
@@ -54,7 +54,7 @@ $total_general = 0;
 $contador = 0;
 
 // Obtener clientes para el filtro
-$sql_clientes = "SELECT id, nombre FROM clientes";
+$sql_clientes = "SELECT NroCliente, Nombre FROM clientes WHERE Inactivo = 0 ORDER BY Nombre";
 $result_clientes = $conexion->query($sql_clientes);
 $todos_clientes = [];
 if ($result_clientes && $result_clientes->num_rows > 0) {
@@ -70,7 +70,7 @@ $hoy = date('Y-m-d');
 $primer_dia_mes = date('Y-m-01');
 
 // Obtener ventas de hoy
-$sql_hoy = "SELECT COUNT(*) as ventas_hoy FROM ventas WHERE DATE(fecha) = ?";
+$sql_hoy = "SELECT COUNT(*) as ventas_hoy FROM salida WHERE DATE(Fecha) = ? AND Anulado = 0";
 $stmt_hoy = $conexion->prepare($sql_hoy);
 $stmt_hoy->bind_param('s', $hoy);
 $stmt_hoy->execute();
@@ -78,7 +78,7 @@ $result_hoy = $stmt_hoy->get_result()->fetch_assoc();
 $ventas_hoy = $result_hoy['ventas_hoy'];
 
 // Obtener ventas del mes
-$sql_mes = "SELECT COUNT(*) as ventas_mes FROM ventas WHERE DATE(fecha) >= ?";
+$sql_mes = "SELECT COUNT(*) as ventas_mes FROM salida WHERE DATE(Fecha) >= ? AND Anulado = 0";
 $stmt_mes = $conexion->prepare($sql_mes);
 $stmt_mes->bind_param('s', $primer_dia_mes);
 $stmt_mes->execute();
@@ -184,6 +184,7 @@ $ventas_mes = $result_mes['ventas_mes'];
 .btn-view:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(23, 162, 184, 0.3);
+    color: white;
 }
 
 .btn-report {
@@ -194,6 +195,7 @@ $ventas_mes = $result_mes['ventas_mes'];
 .btn-report:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
+    color: white;
 }
 
 .summary-card {
@@ -247,6 +249,14 @@ $ventas_mes = $result_mes['ventas_mes'];
     </div>
 </div>
 
+<?php if (isset($_SESSION['mensaje_exito'])): ?>
+    <div class="alert alert-success alert-dismissible fade show">
+        <i class="bi bi-check-circle-fill"></i> <?= $_SESSION['mensaje_exito'] ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <?php unset($_SESSION['mensaje_exito']); ?>
+<?php endif; ?>
+
 <!-- Estadísticas -->
 <div class="row mb-4">
     <div class="col-md-4">
@@ -295,9 +305,9 @@ $ventas_mes = $result_mes['ventas_mes'];
                 <select class="form-select filter-input" name="cliente_id">
                     <option value="0">Todos los clientes</option>
                     <?php foreach ($todos_clientes as $cliente): ?>
-                    <?php $selected = ($cliente['id'] == $cliente_id) ? 'selected' : ''; ?>
-                    <option value="<?= $cliente['id'] ?>" <?= $selected ?>>
-                        <?= htmlspecialchars($cliente['nombre']) ?>
+                    <?php $selected = ($cliente['NroCliente'] == $cliente_id) ? 'selected' : ''; ?>
+                    <option value="<?= $cliente['NroCliente'] ?>" <?= $selected ?>>
+                        <?= htmlspecialchars($cliente['Nombre']) ?>
                     </option>
                     <?php endforeach; ?>
                 </select>
@@ -327,11 +337,11 @@ $ventas_mes = $result_mes['ventas_mes'];
                     </thead>
                     <tbody>
                         <?php while ($venta = $ventas->fetch_assoc()): 
-                            $total_general += $venta['total'];
+                            $total_general += $venta['Total'];
                             $contador++;
                         ?>
                         <tr>
-                            <td><strong>#<?= $venta['id'] ?></strong></td>
+                            <td><strong>#<?= $venta['IdSalida'] ?></strong></td>
                             <td>
                                 <div class="d-flex align-items-center">
                                     <div class="avatar-circle me-2" style="width: 35px; height: 35px; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px;">
@@ -342,22 +352,18 @@ $ventas_mes = $result_mes['ventas_mes'];
                             </td>
                             <td>
                                 <div>
-                                    <div><?= date('d/m/Y', strtotime($venta['fecha'])) ?></div>
-                                    <small class="text-muted"><?= date('H:i', strtotime($venta['fecha'])) ?></small>
+                                    <div><?= date('d/m/Y', strtotime($venta['Fecha'])) ?></div>
+                                    <small class="text-muted"><?= date('H:i', strtotime($venta['Fecha'])) ?></small>
                                 </div>
                             </td>
                             <td class="text-end">
-                                <span class="badge bg-success fs-6">$<?= number_format($venta['total'], 2) ?></span>
+                                <span class="badge bg-success fs-6">$<?= number_format($venta['Total'], 2) ?></span>
                             </td>
                             <td class="text-center">
                                 <div class="btn-group" role="group">
-                                    <a href="<?= $base_url ?>ventas/detalle.php?id=<?= $venta['id'] ?>" 
+                                    <a href="<?= $base_url ?>ventas/detalle.php?id=<?= $venta['IdSalida'] ?>" 
                                        class="btn btn-sm btn-view" title="Ver detalle">
                                         <i class="bi bi-eye"></i>
-                                    </a>
-                                    <a href="<?= $base_url ?>ventas/reporte.php?id=<?= $venta['id'] ?>" 
-                                       class="btn btn-sm btn-report" title="Generar reporte">
-                                        <i class="bi bi-file-earmark-pdf"></i>
                                     </a>
                                 </div>
                             </td>
