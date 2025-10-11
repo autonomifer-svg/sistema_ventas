@@ -5,47 +5,81 @@ requireAuth();
 $success = '';
 $error = '';
 
+// Obtener datos para los selects
+$conexion = conectarDB();
+
+$sql_rubros = "SELECT IdRubro, Descripcion FROM rubros ORDER BY Descripcion";
+$result_rubros = $conexion->query($sql_rubros);
+
+$sql_subrubros = "SELECT IdSubRubro, Descripcion FROM subrubro ORDER BY Descripcion";
+$result_subrubros = $conexion->query($sql_subrubros);
+
+$sql_marcas = "SELECT IdMarca, Marca FROM marca ORDER BY Marca";
+$result_marcas = $conexion->query($sql_marcas);
+
+$sql_tipos = "SELECT IdTipoProducto, TipoProducto FROM tipoproducto ORDER BY TipoProducto";
+$result_tipos = $conexion->query($sql_tipos);
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nombre = trim($_POST['nombre'] ?? '');
-    $descripcion = trim($_POST['descripcion'] ?? '');
-    $precio = floatval($_POST['precio'] ?? 0);
-    $stock = intval($_POST['stock'] ?? 0);
+    $descripcion = trim($_POST['nombre'] ?? '');
+    $precio_venta = floatval($_POST['precio'] ?? 0);
+    $stock = floatval($_POST['stock'] ?? 0);
+    $id_rubro = !empty($_POST['id_rubro']) ? intval($_POST['id_rubro']) : null;
+    $id_subrubro = !empty($_POST['id_subrubro']) ? intval($_POST['id_subrubro']) : null;
+    $id_marca = !empty($_POST['id_marca']) ? intval($_POST['id_marca']) : null;
+    $id_tipo_producto = !empty($_POST['id_tipo_producto']) ? intval($_POST['id_tipo_producto']) : 1;
 
     // Validaciones
-    if (empty($nombre)) {
+    if (empty($descripcion)) {
         $error = "El nombre del producto es obligatorio";
-    } elseif ($precio <= 0) {
+    } elseif ($precio_venta <= 0) {
         $error = "El precio debe ser mayor a 0";
     } elseif ($stock < 0) {
         $error = "El stock no puede ser negativo";
     } else {
         try {
-            $conexion = conectarDB();
+            // Obtener el siguiente CodigoNum
+            $sql_max = "SELECT COALESCE(MAX(CodigoNum), 0) + 1 as siguiente FROM productos";
+            $result_max = $conexion->query($sql_max);
+            $codigo_num = $result_max->fetch_assoc()['siguiente'];
             
-            $sql = "INSERT INTO productos (nombre, descripcion, precio, stock, fecha_creacion) VALUES (?, ?, ?, ?, NOW())";
+            // Generar código automático
+            $codigo = "PROD-" . str_pad($codigo_num, 6, '0', STR_PAD_LEFT);
+            
+            $sql = "INSERT INTO productos (
+                        CodigoNum, Codigo, Descripcion, PrecioVenta, PrecioCosto,
+                        IdTipoProducto, IdRubro, IdSubRubro, IdMarca,
+                        `100`, Suspendido, CalcularStock
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 1)";
+            
             $stmt = $conexion->prepare($sql);
             
             if (!$stmt) {
                 throw new Exception("Error en la preparación: " . $conexion->error);
             }
             
-            $stmt->bind_param("ssdi", $nombre, $descripcion, $precio, $stock);
+            // PrecioCosto = PrecioVenta por defecto (puedes ajustarlo)
+            $precio_costo = $precio_venta * 0.7; // Asumiendo 30% de margen
+            
+            $stmt->bind_param("issddiiid", 
+                $codigo_num, $codigo, $descripcion, $precio_venta, $precio_costo,
+                $id_tipo_producto, $id_rubro, $id_subrubro, $id_marca, $stock
+            );
             
             if ($stmt->execute()) {
-                $success = "Producto '$nombre' creado exitosamente";
+                $success = "Producto '$descripcion' creado exitosamente (Código: $codigo)";
                 
                 // Log de éxito
-                error_log("Producto creado: ID=" . $stmt->insert_id . ", Nombre='$nombre'");
+                error_log("Producto creado: CodigoNum=$codigo_num, Descripcion='$descripcion'");
                 
-                // Limpiar formulario después del éxito
-                $nombre = $descripcion = '';
-                $precio = $stock = 0;
+                // Limpiar formulario
+                $descripcion = '';
+                $precio_venta = $stock = 0;
             } else {
                 throw new Exception("Error al ejecutar: " . $stmt->error);
             }
             
             $stmt->close();
-            $conexion->close();
             
         } catch (Exception $e) {
             $error = "Error al crear el producto: " . $e->getMessage();
@@ -91,23 +125,6 @@ include(__DIR__ . '/../includes/header.php');
     box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
     background-color: white;
     transform: translateY(-1px);
-}
-
-.modern-textarea {
-    border: 2px solid #e0e6ff;
-    border-radius: 12px;
-    padding: 1rem;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    background-color: #fafbff;
-    resize: vertical;
-    min-height: 120px;
-}
-
-.modern-textarea:focus {
-    border-color: #667eea;
-    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-    background-color: white;
 }
 
 .form-label {
@@ -208,10 +225,6 @@ include(__DIR__ . '/../includes/header.php');
     color: #c53030;
 }
 
-.input-group-modern {
-    position: relative;
-}
-
 .input-icon {
     position: absolute;
     right: 1rem;
@@ -219,27 +232,6 @@ include(__DIR__ . '/../includes/header.php');
     transform: translateY(-50%);
     color: #a0aec0;
     z-index: 5;
-}
-
-.floating-label {
-    position: absolute;
-    left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    background: white;
-    padding: 0 0.5rem;
-    color: #a0aec0;
-    transition: all 0.3s ease;
-    pointer-events: none;
-}
-
-.modern-input:focus + .floating-label,
-.modern-input:not(:placeholder-shown) + .floating-label {
-    top: 0;
-    transform: translateY(-50%);
-    font-size: 0.85rem;
-    color: #667eea;
-    font-weight: 500;
 }
 
 .form-section {
@@ -285,43 +277,50 @@ include(__DIR__ . '/../includes/header.php');
                 <?php endif; ?>
 
                 <form method="POST" id="productoForm">
-                    <div class="row">
-                        <div class="col-md-12 mb-4">
-                            <label class="form-label">Nombre del Producto <span class="text-danger">*</span></label>
-                            <div class="input-group-modern">
-                                <input type="text" class="form-control modern-input" name="nombre" 
-                                       value="<?= htmlspecialchars($nombre ?? '') ?>" 
-                                       placeholder="Ej: Detergente Líquido Premium" required>
-                                <i class="bi bi-tag input-icon"></i>
-                            </div>
-                        </div>
+                    <div class="mb-4">
+                        <label class="form-label">Nombre del Producto <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control modern-input" name="nombre" 
+                               value="<?= htmlspecialchars($descripcion ?? '') ?>" 
+                               placeholder="Ej: Detergente Líquido Premium" required>
                     </div>
                     
                     <div class="row">
                         <div class="col-md-6 mb-4">
-                            <label class="form-label">Precio ($) <span class="text-danger">*</span></label>
-                            <div class="input-group-modern">
-                                <input type="number" step="0.01" min="0.01" class="form-control modern-input" name="precio" 
-                                       value="<?= $precio > 0 ? $precio : '' ?>" 
-                                       placeholder="0.00" required>
-                                <i class="bi bi-currency-dollar input-icon"></i>
-                            </div>
+                            <label class="form-label">Precio de Venta ($) <span class="text-danger">*</span></label>
+                            <input type="number" step="0.01" min="0.01" class="form-control modern-input" name="precio" 
+                                   value="<?= $precio_venta > 0 ? $precio_venta : '' ?>" 
+                                   placeholder="0.00" required>
                         </div>
                         <div class="col-md-6 mb-4">
                             <label class="form-label">Stock Inicial <span class="text-danger">*</span></label>
-                            <div class="input-group-modern">
-                                <input type="number" min="0" class="form-control modern-input" name="stock" 
-                                       value="<?= $stock > 0 ? $stock : '' ?>" 
-                                       placeholder="0" required>
-                                <i class="bi bi-boxes input-icon"></i>
-                            </div>
+                            <input type="number" step="0.01" min="0" class="form-control modern-input" name="stock" 
+                                   value="<?= $stock > 0 ? $stock : '' ?>" 
+                                   placeholder="0" required>
                         </div>
                     </div>
                     
-                    <div class="mb-4">
-                        <label class="form-label">Descripción</label>
-                        <textarea class="form-control modern-textarea" name="descripcion" 
-                                  placeholder="Descripción detallada del producto (opcional)"><?= htmlspecialchars($descripcion ?? '') ?></textarea>
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label">Tipo de Producto</label>
+                            <select class="form-select modern-input" name="id_tipo_producto">
+                                <?php while ($tipo = $result_tipos->fetch_assoc()): ?>
+                                    <option value="<?= $tipo['IdTipoProducto'] ?>">
+                                        <?= htmlspecialchars($tipo['TipoProducto']) ?>
+                                    </option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label">Marca</label>
+                            <select class="form-select modern-input" name="id_marca">
+                                <option value="">Seleccionar marca...</option>
+                                <?php while ($marca = $result_marcas->fetch_assoc()): ?>
+                                    <option value="<?= $marca['IdMarca'] ?>">
+                                        <?= htmlspecialchars($marca['Marca']) ?>
+                                    </option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="d-flex gap-3 justify-content-end">
@@ -348,7 +347,7 @@ include(__DIR__ . '/../includes/header.php');
                         <i class="bi bi-check"></i>
                     </div>
                     <div>
-                        <small><strong>Nombres descriptivos:</strong> Facilitan las búsquedas y identificación rápida del producto</small>
+                        <small><strong>Código automático:</strong> El sistema generará un código único para el producto</small>
                     </div>
                 </div>
                 
@@ -357,7 +356,7 @@ include(__DIR__ . '/../includes/header.php');
                         <i class="bi bi-check"></i>
                     </div>
                     <div>
-                        <small><strong>Precio con impuestos:</strong> Incluye todos los costos para evitar confusiones</small>
+                        <small><strong>Precio de costo:</strong> Se calculará automáticamente con un margen del 30%</small>
                     </div>
                 </div>
                 
@@ -366,7 +365,7 @@ include(__DIR__ . '/../includes/header.php');
                         <i class="bi bi-check"></i>
                     </div>
                     <div>
-                        <small><strong>Stock inicial cero:</strong> Puedes empezar con 0 si aún no tienes inventario</small>
+                        <small><strong>Stock inicial:</strong> Puedes empezar con 0 si aún no tienes inventario</small>
                     </div>
                 </div>
                 
@@ -375,7 +374,7 @@ include(__DIR__ . '/../includes/header.php');
                         <i class="bi bi-check"></i>
                     </div>
                     <div>
-                        <small><strong>Descripción detallada:</strong> Ayuda a los clientes a conocer mejor el producto</small>
+                        <small><strong>Campos opcionales:</strong> Rubro, sub-rubro y marca pueden dejarse en blanco</small>
                     </div>
                 </div>
                 
@@ -390,7 +389,6 @@ include(__DIR__ . '/../includes/header.php');
             </div>
         </div>
         
-        <!-- Card adicional con estadísticas -->
         <div class="card mt-4" style="border: none; border-radius: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
             <div class="card-body text-center">
                 <i class="bi bi-graph-up" style="font-size: 2.5rem; margin-bottom: 1rem;"></i>
@@ -406,7 +404,7 @@ include(__DIR__ . '/../includes/header.php');
 document.getElementById('productoForm').addEventListener('submit', function(e) {
     const nombre = document.querySelector('input[name="nombre"]').value.trim();
     const precio = parseFloat(document.querySelector('input[name="precio"]').value);
-    const stock = parseInt(document.querySelector('input[name="stock"]').value);
+    const stock = parseFloat(document.querySelector('input[name="stock"]').value);
     
     if (!nombre) {
         alert('El nombre del producto es obligatorio');
@@ -429,7 +427,6 @@ document.getElementById('productoForm').addEventListener('submit', function(e) {
 
 // Efectos visuales mejorados
 document.addEventListener('DOMContentLoaded', function() {
-    // Animación de entrada para los cards
     const cards = document.querySelectorAll('.card');
     cards.forEach((card, index) => {
         card.style.opacity = '0';
@@ -442,8 +439,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, index * 100);
     });
     
-    // Efecto de focus mejorado
-    const inputs = document.querySelectorAll('.modern-input, .modern-textarea');
+    const inputs = document.querySelectorAll('.modern-input');
     inputs.forEach(input => {
         input.addEventListener('focus', function() {
             this.parentElement.style.transform = 'scale(1.02)';
@@ -456,4 +452,31 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<?php include(__DIR__ . '/../includes/footer.php'); ?>
+<?php 
+$conexion->close();
+include(__DIR__ . '/../includes/footer.php'); 
+?></select>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label">Rubro</label>
+                            <select class="form-select modern-input" name="id_rubro">
+                                <option value="">Seleccionar rubro...</option>
+                                <?php while ($rubro = $result_rubros->fetch_assoc()): ?>
+                                    <option value="<?= $rubro['IdRubro'] ?>">
+                                        <?= htmlspecialchars($rubro['Descripcion']) ?>
+                                    </option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label">Sub-Rubro</label>
+                            <select class="form-select modern-input" name="id_subrubro">
+                                <option value="">Seleccionar sub-rubro...</option>
+                                <?php while ($subrubro = $result_subrubros->fetch_assoc()): ?>
+                                    <option value="<?= $subrubro['IdSubRubro'] ?>">
+                                        <?= htmlspecialchars($subrubro['Descripcion']) ?>
+                                    </option>
+                                <?php endwhile; ?>
