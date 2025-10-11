@@ -37,11 +37,6 @@ if (isset($_GET['error'])) {
     overflow: hidden;
 }
 
-.modern-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-}
-
 .card-header-modern {
     background: linear-gradient(135deg, #f8faff 0%, #ffffff 100%);
     border-bottom: 2px solid #e2e8f0;
@@ -293,30 +288,6 @@ if (isset($_GET['error'])) {
     50% { transform: scale(1.05); }
     100% { transform: scale(1); }
 }
-
-@media (max-width: 768px) {
-    .products-header {
-        padding: 20px;
-        text-align: center;
-    }
-    
-    .stats-container {
-        flex-direction: column;
-    }
-    
-    .action-buttons {
-        flex-direction: column;
-    }
-    
-    .modern-table {
-        font-size: 0.9rem;
-    }
-    
-    .modern-table thead th,
-    .modern-table tbody td {
-        padding: 15px 10px;
-    }
-}
 </style>
 
 <div class="container-fluid">
@@ -341,20 +312,25 @@ if (isset($_GET['error'])) {
             <div class="search-container">
                 <div class="position-relative">
                     <input type="text" id="searchProducts" class="form-control search-input" 
-                           placeholder="🔍 Buscar productos por nombre, descripción o ID...">
+                           placeholder="🔍 Buscar productos por código, nombre o marca...">
                 </div>
             </div>
         </div>
         <div class="card-body p-4">
             <?php
             try {
-                // Conectar a la base de datos REAL
                 $conexion = conectarDB();
                 
-                // Consulta REAL a la base de datos
-                $sql = "SELECT id, nombre, descripcion, precio, stock, fecha_creacion 
-                        FROM productos 
-                        ORDER BY nombre ASC";
+                // Consulta CORREGIDA - usando los campos correctos
+                $sql = "SELECT 
+                            p.CodigoNum, p.Codigo, p.Descripcion, p.PrecioVenta, p.`100` as Stock,
+                            m.Marca, r.Descripcion as Rubro, tp.TipoProducto, p.Suspendido
+                        FROM productos p
+                        LEFT JOIN marca m ON p.IdMarca = m.IdMarca
+                        LEFT JOIN rubros r ON p.IdRubro = r.IdRubro
+                        LEFT JOIN tipoproducto tp ON p.IdTipoProducto = tp.IdTipoProducto
+                        WHERE p.Suspendido = 0
+                        ORDER BY p.Descripcion ASC";
                 
                 $resultado = $conexion->query($sql);
                 
@@ -371,8 +347,8 @@ if (isset($_GET['error'])) {
                 $productos_array = [];
                 while ($row = $resultado->fetch_assoc()) {
                     $productos_array[] = $row;
-                    if ($row['stock'] <= 10) $productos_bajo_stock++;
-                    $valor_inventario += $row['precio'] * $row['stock'];
+                    if ($row['Stock'] <= 10) $productos_bajo_stock++;
+                    $valor_inventario += $row['PrecioVenta'] * $row['Stock'];
                 }
             ?>
             
@@ -397,41 +373,46 @@ if (isset($_GET['error'])) {
                     <table class="table modern-table" id="productsTable">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <th>Código</th>
                                 <th>Producto</th>
-                                <th>Descripción</th>
+                                <th>Marca/Rubro</th>
                                 <th>Precio</th>
                                 <th>Stock</th>
                                 <th>Estado</th>
-                                <th>Fecha</th>
                                 <th class="text-center">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach ($productos_array as $producto): ?>
-                                <tr class="product-row" data-search="<?= strtolower(htmlspecialchars($producto['nombre'] . ' ' . $producto['descripcion'] . ' ' . $producto['id'])) ?>">
+                                <tr class="product-row" data-search="<?= strtolower(htmlspecialchars($producto['Codigo'] . ' ' . $producto['Descripcion'] . ' ' . ($producto['Marca'] ?? '') . ' ' . $producto['CodigoNum'])) ?>">
                                     <td>
-                                        <span class="product-id"><?= $producto['id'] ?></span>
+                                        <span class="product-id"><?= htmlspecialchars($producto['Codigo']) ?></span>
                                     </td>
                                     <td>
-                                        <div class="product-name"><?= htmlspecialchars($producto['nombre']) ?></div>
+                                        <div class="product-name"><?= htmlspecialchars($producto['Descripcion']) ?></div>
+                                        <?php if ($producto['TipoProducto']): ?>
+                                            <small class="text-muted"><?= htmlspecialchars($producto['TipoProducto']) ?></small>
+                                        <?php endif; ?>
                                     </td>
                                     <td>
-                                        <span class="text-muted">
-                                            <?php 
-                                            $desc = htmlspecialchars($producto['descripcion'] ?? '');
-                                            echo strlen($desc) > 40 ? substr($desc, 0, 40) . '...' : ($desc ?: 'Sin descripción');
-                                            ?>
-                                        </span>
+                                        <?php if ($producto['Marca']): ?>
+                                            <div><strong><?= htmlspecialchars($producto['Marca']) ?></strong></div>
+                                        <?php endif; ?>
+                                        <?php if ($producto['Rubro']): ?>
+                                            <small class="text-muted"><?= htmlspecialchars($producto['Rubro']) ?></small>
+                                        <?php endif; ?>
+                                        <?php if (!$producto['Marca'] && !$producto['Rubro']): ?>
+                                            <span class="text-muted">Sin clasificar</span>
+                                        <?php endif; ?>
                                     </td>
                                     <td>
                                         <span class="price-tag">
-                                            $<?= number_format($producto['precio'], 2) ?>
+                                            $<?= number_format($producto['PrecioVenta'], 2) ?>
                                         </span>
                                     </td>
                                     <td>
                                         <?php 
-                                        $stock = $producto['stock'];
+                                        $stock = $producto['Stock'];
                                         if ($stock <= 10) {
                                             echo "<span class='stock-badge-low'><i class='bi bi-exclamation-triangle'></i> $stock</span>";
                                         } elseif ($stock <= 30) {
@@ -453,25 +434,14 @@ if (isset($_GET['error'])) {
                                         <?php endif; ?>
                                     </td>
                                     <td>
-                                        <small class="text-muted">
-                                            <?php 
-                                            if ($producto['fecha_creacion']) {
-                                                echo date('d/m/Y', strtotime($producto['fecha_creacion']));
-                                            } else {
-                                                echo 'N/A';
-                                            }
-                                            ?>
-                                        </small>
-                                    </td>
-                                    <td>
                                         <div class="action-buttons">
-                                            <a href="<?= $base_url ?>productos/editar.php?id=<?= $producto['id'] ?>" 
+                                            <a href="<?= $base_url ?>productos/editar.php?id=<?= $producto['CodigoNum'] ?>" 
                                                class="btn btn-edit" title="Editar">
                                                 <i class="bi bi-pencil-square"></i>
                                             </a>
-                                            <a href="<?= $base_url ?>productos/eliminar.php?id=<?= $producto['id'] ?>" 
+                                            <a href="<?= $base_url ?>productos/eliminar.php?id=<?= $producto['CodigoNum'] ?>" 
                                                class="btn btn-delete" title="Eliminar"
-                                               onclick="return confirm('¿Está seguro de eliminar el producto: <?= htmlspecialchars($producto['nombre']) ?>?')">
+                                               onclick="return confirm('¿Está seguro de eliminar el producto: <?= htmlspecialchars($producto['Descripcion']) ?>?')">
                                                 <i class="bi bi-trash3"></i>
                                             </a>
                                         </div>
@@ -508,7 +478,6 @@ if (isset($_GET['error'])) {
                 $conexion->close();
                 
             } catch (Exception $e) {
-                // Error en la consulta
                 echo "<div class='alert alert-danger modern-alert'>
                         <h5><i class='bi bi-exclamation-triangle-fill'></i> Error al cargar productos</h5>
                         <p>No se pudieron cargar los productos desde la base de datos.</p>
@@ -518,7 +487,6 @@ if (isset($_GET['error'])) {
                         </details>
                       </div>";
                 
-                // Log del error
                 error_log("Error en productos/listar.php: " . $e->getMessage());
             }
             ?>
@@ -533,7 +501,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const noResults = document.getElementById('noResults');
     const productsTable = document.getElementById('productsTable');
 
-    // Función de búsqueda
     function searchProducts() {
         const searchTerm = searchInput.value.toLowerCase().trim();
         let visibleCount = 0;
@@ -545,7 +512,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 row.style.display = '';
                 visibleCount++;
                 
-                // Highlight search terms
                 if (searchTerm) {
                     highlightSearchTerm(row, searchTerm);
                 } else {
@@ -556,7 +522,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // Toggle no results message
         if (visibleCount === 0 && searchTerm) {
             noResults.style.display = 'block';
             productsTable.style.display = 'none';
@@ -578,10 +543,8 @@ document.addEventListener('DOMContentLoaded', function() {
         nameCell.innerHTML = nameCell.textContent;
     }
 
-    // Event listener for search
     searchInput.addEventListener('input', searchProducts);
 
-    // Animation on page load
     setTimeout(() => {
         productRows.forEach((row, index) => {
             row.style.opacity = '0';
