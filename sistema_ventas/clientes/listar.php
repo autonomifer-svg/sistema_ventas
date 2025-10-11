@@ -24,18 +24,20 @@ $inicio = ($pagina - 1) * $por_pagina;
 // Búsqueda
 $buscar = isset($_GET['buscar']) ? $_GET['buscar'] : '';
 $where_clause = '';
+$where_clause_count = ''; // Separado para el COUNT
 $params = [];
 $types = '';
 
 if (!empty($buscar)) {
-    $where_clause = "WHERE nombre LIKE ? OR telefono LIKE ? OR direccion LIKE ?";
+    $where_clause = "WHERE Nombre LIKE ? OR RazonSocial LIKE ? OR Telefono LIKE ? OR Ruc LIKE ?";
+    $where_clause_count = $where_clause; // Mismo WHERE para COUNT
     $buscar_param = "%$buscar%";
-    $params = [$buscar_param, $buscar_param, $buscar_param];
-    $types = 'sss';
+    $params = [$buscar_param, $buscar_param, $buscar_param, $buscar_param];
+    $types = 'ssss';
 }
 
 // Contar total de clientes
-$sql_count = "SELECT COUNT(*) as total FROM clientes $where_clause";
+$sql_count = "SELECT COUNT(*) as total FROM clientes $where_clause_count";
 $stmt_count = $conexion->prepare($sql_count);
 if (!empty($params)) {
     $stmt_count->bind_param($types, ...$params);
@@ -44,8 +46,9 @@ $stmt_count->execute();
 $total_clientes = $stmt_count->get_result()->fetch_assoc()['total'];
 $total_paginas = ceil($total_clientes / $por_pagina);
 
-// Contar clientes activos (opcional - puedes ajustar según tu lógica)
-$sql_activos = "SELECT COUNT(*) as activos FROM clientes WHERE 1=1 $where_clause";
+// Contar clientes activos CON el WHERE de búsqueda
+$where_activos = $where_clause_count ? "$where_clause_count AND Inactivo = 0" : "WHERE Inactivo = 0";
+$sql_activos = "SELECT COUNT(*) as activos FROM clientes $where_activos";
 $stmt_activos = $conexion->prepare($sql_activos);
 if (!empty($params)) {
     $stmt_activos->bind_param($types, ...$params);
@@ -53,11 +56,17 @@ if (!empty($params)) {
 $stmt_activos->execute();
 $clientes_activos = $stmt_activos->get_result()->fetch_assoc()['activos'];
 
-// Obtener clientes
-$sql = "SELECT id, nombre, telefono, direccion, fecha_registro 
-        FROM clientes 
+// Obtener clientes con información adicional
+$sql = "SELECT 
+            c.NroCliente, c.Nombre, c.RazonSocial, c.Telefono, c.Direccion, 
+            c.Ruc, c.FechaAct, c.Inactivo,
+            ci.Ciudad, tc.TipoCliente, z.Zona
+        FROM clientes c
+        LEFT JOIN ciudad ci ON c.IdCiudad = ci.IdCiudad
+        LEFT JOIN tipocliente tc ON c.IdTipoCliente = tc.IdTipoCliente
+        LEFT JOIN zonas z ON c.IdZona = z.IdZona
         $where_clause 
-        ORDER BY nombre ASC 
+        ORDER BY c.Nombre ASC 
         LIMIT ?, ?";
 
 $stmt = $conexion->prepare($sql);
@@ -215,6 +224,16 @@ $resultado = $stmt->get_result();
     color: #667eea;
     margin-bottom: 1rem;
 }
+
+.badge-inactive {
+    background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+    color: #721c24;
+}
+
+.badge-active {
+    background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+    color: #155724;
+}
 </style>
 
 <!-- Header con gradiente -->
@@ -278,7 +297,7 @@ $resultado = $stmt->get_result();
                         <i class="bi bi-search text-muted"></i>
                     </span>
                     <input type="text" class="form-control" name="buscar" 
-                           placeholder="Buscar clientes por nombre, teléfono o dirección..." 
+                           placeholder="Buscar clientes por nombre, razón social, teléfono o RUC..." 
                            value="<?= htmlspecialchars($buscar) ?>"
                            style="border: 1px solid #e0e6ff; border-left: none;">
                 </div>
@@ -314,7 +333,9 @@ $resultado = $stmt->get_result();
                             <th>ID</th>
                             <th>Cliente</th>
                             <th>Teléfono</th>
-                            <th>Dirección</th>
+                            <th>Ciudad</th>
+                            <th>Tipo</th>
+                            <th>Estado</th>
                             <th>Fecha</th>
                             <th class="text-center">Acciones</th>
                         </tr>
@@ -322,27 +343,40 @@ $resultado = $stmt->get_result();
                     <tbody>
                         <?php while ($cliente = $resultado->fetch_assoc()): ?>
                         <tr>
-                            <td><strong><?= $cliente['id'] ?></strong></td>
+                            <td><strong><?= $cliente['NroCliente'] ?></strong></td>
                             <td>
                                 <div class="d-flex align-items-center">
                                     <div class="avatar-circle me-2" style="width: 35px; height: 35px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px;">
-                                        <?= strtoupper(substr($cliente['nombre'], 0, 1)) ?>
+                                        <?= strtoupper(substr($cliente['Nombre'], 0, 1)) ?>
                                     </div>
-                                    <span><?= htmlspecialchars($cliente['nombre']) ?></span>
+                                    <div>
+                                        <div><strong><?= htmlspecialchars($cliente['Nombre']) ?></strong></div>
+                                        <?php if ($cliente['RazonSocial'] && $cliente['RazonSocial'] != $cliente['Nombre']): ?>
+                                            <small class="text-muted"><?= htmlspecialchars($cliente['RazonSocial']) ?></small>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
                             </td>
                             <td>
-                                <span class="badge bg-light text-dark"><?= htmlspecialchars($cliente['telefono'] ?? 'No especificado') ?></span>
+                                <span class="badge bg-light text-dark"><?= htmlspecialchars($cliente['Telefono'] ?? 'No especificado') ?></span>
                             </td>
-                            <td><?= htmlspecialchars($cliente['direccion'] ?? 'No especificado') ?></td>
-                            <td><?= date('d/m/Y', strtotime($cliente['fecha_registro'])) ?></td>
+                            <td><?= htmlspecialchars($cliente['Ciudad'] ?? 'No especificado') ?></td>
+                            <td><span class="badge bg-info"><?= htmlspecialchars($cliente['TipoCliente'] ?? 'N/A') ?></span></td>
+                            <td>
+                                <?php if ($cliente['Inactivo'] == 0): ?>
+                                    <span class="badge badge-active">Activo</span>
+                                <?php else: ?>
+                                    <span class="badge badge-inactive">Inactivo</span>
+                                <?php endif; ?>
+                            </td>
+                            <td><?= date('d/m/Y', strtotime($cliente['FechaAct'])) ?></td>
                             <td class="text-center">
                                 <div class="btn-group" role="group">
-                                    <a href="editar.php?id=<?= $cliente['id'] ?>" 
+                                    <a href="editar.php?id=<?= $cliente['NroCliente'] ?>" 
                                        class="btn btn-sm btn-edit" title="Editar">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <a href="eliminar.php?id=<?= $cliente['id'] ?>" 
+                                    <a href="eliminar.php?id=<?= $cliente['NroCliente'] ?>" 
                                        class="btn btn-sm btn-delete" title="Eliminar"
                                        onclick="return confirm('¿Estás seguro de eliminar este cliente?')">
                                         <i class="bi bi-trash"></i>
