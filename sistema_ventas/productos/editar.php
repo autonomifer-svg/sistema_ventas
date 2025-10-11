@@ -17,7 +17,13 @@ $id = intval($_GET['id']);
 try {
     $conexion = conectarDB();
     
-    $sql = "SELECT * FROM productos WHERE id = ?";
+    $sql = "SELECT p.*, m.Marca, r.Descripcion as Rubro, sr.Descripcion as SubRubro, tp.TipoProducto
+            FROM productos p
+            LEFT JOIN marca m ON p.IdMarca = m.IdMarca
+            LEFT JOIN rubros r ON p.IdRubro = r.IdRubro
+            LEFT JOIN subrubro sr ON p.IdSubRubro = sr.IdSubRubro
+            LEFT JOIN tipoproducto tp ON p.IdTipoProducto = tp.IdTipoProducto
+            WHERE p.CodigoNum = ?";
     $stmt = $conexion->prepare($sql);
     
     if (!$stmt) {
@@ -37,6 +43,19 @@ try {
     $producto = $result->fetch_assoc();
     $stmt->close();
     
+    // Obtener datos para los selects
+    $sql_rubros = "SELECT IdRubro, Descripcion FROM rubros ORDER BY Descripcion";
+    $result_rubros = $conexion->query($sql_rubros);
+    
+    $sql_subrubros = "SELECT IdSubRubro, Descripcion FROM subrubro ORDER BY Descripcion";
+    $result_subrubros = $conexion->query($sql_subrubros);
+    
+    $sql_marcas = "SELECT IdMarca, Marca FROM marca ORDER BY Marca";
+    $result_marcas = $conexion->query($sql_marcas);
+    
+    $sql_tipos = "SELECT IdTipoProducto, TipoProducto FROM tipoproducto ORDER BY TipoProducto";
+    $result_tipos = $conexion->query($sql_tipos);
+    
 } catch (Exception $e) {
     error_log("Error al obtener producto: " . $e->getMessage());
     redirect('productos/listar.php?error=Error al cargar producto');
@@ -44,39 +63,61 @@ try {
 
 // Actualizar producto
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nombre = trim($_POST['nombre'] ?? '');
-    $descripcion = trim($_POST['descripcion'] ?? '');
-    $precio = floatval($_POST['precio'] ?? 0);
-    $stock = intval($_POST['stock'] ?? 0);
+    $descripcion = trim($_POST['nombre'] ?? '');
+    $precio_venta = floatval($_POST['precio'] ?? 0);
+    $stock = floatval($_POST['stock'] ?? 0);
+    $id_rubro = !empty($_POST['id_rubro']) ? intval($_POST['id_rubro']) : null;
+    $id_subrubro = !empty($_POST['id_subrubro']) ? intval($_POST['id_subrubro']) : null;
+    $id_marca = !empty($_POST['id_marca']) ? intval($_POST['id_marca']) : null;
+    $id_tipo_producto = !empty($_POST['id_tipo_producto']) ? intval($_POST['id_tipo_producto']) : 1;
 
     // Validaciones
-    if (empty($nombre)) {
+    if (empty($descripcion)) {
         $error = "El nombre del producto es obligatorio";
-    } elseif ($precio <= 0) {
+    } elseif ($precio_venta <= 0) {
         $error = "El precio debe ser mayor a 0";
     } elseif ($stock < 0) {
         $error = "El stock no puede ser negativo";
     } else {
         try {
-            $sql = "UPDATE productos SET nombre = ?, descripcion = ?, precio = ?, stock = ? WHERE id = ?";
+            // Calcular precio costo (70% del precio venta)
+            $precio_costo = $precio_venta * 0.7;
+            
+            $sql = "UPDATE productos SET 
+                        Descripcion = ?, 
+                        PrecioVenta = ?, 
+                        PrecioCosto = ?,
+                        `100` = ?,
+                        IdRubro = ?,
+                        IdSubRubro = ?,
+                        IdMarca = ?,
+                        IdTipoProducto = ?
+                    WHERE CodigoNum = ?";
             $stmt = $conexion->prepare($sql);
             
             if (!$stmt) {
                 throw new Exception("Error en la preparación: " . $conexion->error);
             }
             
-            $stmt->bind_param("ssdii", $nombre, $descripcion, $precio, $stock, $id);
+            $stmt->bind_param("sdddiiii", 
+                $descripcion, $precio_venta, $precio_costo, $stock,
+                $id_rubro, $id_subrubro, $id_marca, $id_tipo_producto, $id
+            );
             
             if ($stmt->execute()) {
                 $success = "Producto actualizado exitosamente";
                 
-                // Actualizar datos locales para mostrar en el formulario
-                $producto['nombre'] = $nombre;
-                $producto['descripcion'] = $descripcion;
-                $producto['precio'] = $precio;
-                $producto['stock'] = $stock;
+                // Actualizar datos locales
+                $producto['Descripcion'] = $descripcion;
+                $producto['PrecioVenta'] = $precio_venta;
+                $producto['PrecioCosto'] = $precio_costo;
+                $producto['100'] = $stock;
+                $producto['IdRubro'] = $id_rubro;
+                $producto['IdSubRubro'] = $id_subrubro;
+                $producto['IdMarca'] = $id_marca;
+                $producto['IdTipoProducto'] = $id_tipo_producto;
                 
-                error_log("Producto actualizado: ID=$id, Nombre='$nombre'");
+                error_log("Producto actualizado: CodigoNum=$id, Descripcion='$descripcion'");
             } else {
                 throw new Exception("Error al ejecutar: " . $stmt->error);
             }
@@ -88,10 +129,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             error_log("Error en actualizar producto: " . $e->getMessage());
         }
     }
-}
-
-if (isset($conexion)) {
-    $conexion->close();
 }
 
 include(__DIR__ . '/../includes/header.php');
@@ -131,33 +168,76 @@ include(__DIR__ . '/../includes/header.php');
                 <?php endif; ?>
 
                 <form method="POST" id="editarForm">
+                    <div class="mb-3">
+                        <label class="form-label">Nombre del Producto <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="nombre" 
+                               value="<?= htmlspecialchars($producto['Descripcion']) ?>" required>
+                    </div>
+                    
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Nombre del Producto <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" name="nombre" 
-                                       value="<?= htmlspecialchars($producto['nombre']) ?>" required>
-                            </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Precio de Venta ($) <span class="text-danger">*</span></label>
+                            <input type="number" step="0.01" min="0.01" class="form-control" name="precio" 
+                                   value="<?= $producto['PrecioVenta'] ?>" required>
                         </div>
-                        <div class="col-md-3">
-                            <div class="mb-3">
-                                <label class="form-label">Precio ($) <span class="text-danger">*</span></label>
-                                <input type="number" step="0.01" min="0.01" class="form-control" name="precio" 
-                                       value="<?= $producto['precio'] ?>" required>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="mb-3">
-                                <label class="form-label">Stock <span class="text-danger">*</span></label>
-                                <input type="number" min="0" class="form-control" name="stock" 
-                                       value="<?= $producto['stock'] ?>" required>
-                            </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Stock <span class="text-danger">*</span></label>
+                            <input type="number" step="0.01" min="0" class="form-control" name="stock" 
+                                   value="<?= $producto['100'] ?>" required>
                         </div>
                     </div>
                     
-                    <div class="mb-3">
-                        <label class="form-label">Descripción</label>
-                        <textarea class="form-control" name="descripcion" rows="4"><?= htmlspecialchars($producto['descripcion'] ?? '') ?></textarea>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Tipo de Producto</label>
+                            <select class="form-select" name="id_tipo_producto">
+                                <?php while ($tipo = $result_tipos->fetch_assoc()): ?>
+                                    <option value="<?= $tipo['IdTipoProducto'] ?>"
+                                        <?= ($producto['IdTipoProducto'] == $tipo['IdTipoProducto']) ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($tipo['TipoProducto']) ?>
+                                    </option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Rubro</label>
+                            <select class="form-select" name="id_rubro">
+                                <option value="">Seleccionar rubro...</option>
+                                <?php while ($rubro = $result_rubros->fetch_assoc()): ?>
+                                    <option value="<?= $rubro['IdRubro'] ?>"
+                                        <?= ($producto['IdRubro'] == $rubro['IdRubro']) ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($rubro['Descripcion']) ?>
+                                    </option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Sub-Rubro</label>
+                            <select class="form-select" name="id_subrubro">
+                                <option value="">Seleccionar sub-rubro...</option>
+                                <?php while ($subrubro = $result_subrubros->fetch_assoc()): ?>
+                                    <option value="<?= $subrubro['IdSubRubro'] ?>"
+                                        <?= ($producto['IdSubRubro'] == $subrubro['IdSubRubro']) ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($subrubro['Descripcion']) ?>
+                                    </option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Marca</label>
+                            <select class="form-select" name="id_marca">
+                                <option value="">Seleccionar marca...</option>
+                                <?php while ($marca = $result_marcas->fetch_assoc()): ?>
+                                    <option value="<?= $marca['IdMarca'] ?>"
+                                        <?= ($producto['IdMarca'] == $marca['IdMarca']) ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($marca['Marca']) ?>
+                                    </option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -179,16 +259,17 @@ include(__DIR__ . '/../includes/header.php');
                 <h6 class="mb-0"><i class="bi bi-info-circle"></i> Información</h6>
             </div>
             <div class="card-body">
-                <p><strong>ID del Producto:</strong> <?= $producto['id'] ?></p>
-                <?php if (isset($producto['fecha_creacion']) && $producto['fecha_creacion']): ?>
-                    <p><strong>Creado:</strong> <?= date('d/m/Y H:i', strtotime($producto['fecha_creacion'])) ?></p>
+                <p><strong>Código Interno:</strong> <?= htmlspecialchars($producto['Codigo']) ?></p>
+                <p><strong>Código Numérico:</strong> <?= $producto['CodigoNum'] ?></p>
+                <?php if (isset($producto['FechaAct']) && $producto['FechaAct']): ?>
+                    <p><strong>Última Actualización:</strong> <?= date('d/m/Y H:i', strtotime($producto['FechaAct'])) ?></p>
                 <?php endif; ?>
                 
                 <hr>
                 
                 <h6>Estado del Stock:</h6>
                 <?php 
-                $stock = $producto['stock'];
+                $stock = $producto['100'];
                 if ($stock <= 0): ?>
                     <span class="badge bg-danger">Sin Stock</span>
                     <p class="small text-muted mt-1">⚠️ Producto agotado</p>
@@ -207,10 +288,10 @@ include(__DIR__ . '/../includes/header.php');
                 <h6 class="mb-0"><i class="bi bi-trash"></i> Zona Peligrosa</h6>
             </div>
             <div class="card-body">
-                <p class="small">Si ya no necesitas este producto, puedes eliminarlo permanentemente.</p>
-                <a href="<?= $base_url ?>productos/eliminar.php?id=<?= $producto['id'] ?>" 
+                <p class="small">Si ya no necesitas este producto, puedes suspenderlo o eliminarlo.</p>
+                <a href="<?= $base_url ?>productos/eliminar.php?id=<?= $producto['CodigoNum'] ?>" 
                    class="btn btn-outline-danger btn-sm"
-                   onclick="return confirm('⚠️ ¿Estás seguro de eliminar este producto?\n\nEsta acción no se puede deshacer.\n\nProducto: <?= htmlspecialchars($producto['nombre']) ?>')">
+                   onclick="return confirm('⚠️ ¿Estás seguro de eliminar este producto?\n\nEsta acción no se puede deshacer.\n\nProducto: <?= htmlspecialchars($producto['Descripcion']) ?>')">
                     <i class="bi bi-trash"></i> Eliminar Producto
                 </a>
             </div>
@@ -223,7 +304,7 @@ include(__DIR__ . '/../includes/header.php');
 document.getElementById('editarForm').addEventListener('submit', function(e) {
     const nombre = document.querySelector('input[name="nombre"]').value.trim();
     const precio = parseFloat(document.querySelector('input[name="precio"]').value);
-    const stock = parseInt(document.querySelector('input[name="stock"]').value);
+    const stock = parseFloat(document.querySelector('input[name="stock"]').value);
     
     if (!nombre) {
         alert('El nombre del producto es obligatorio');
@@ -245,4 +326,7 @@ document.getElementById('editarForm').addEventListener('submit', function(e) {
 });
 </script>
 
-<?php include(__DIR__ . '/../includes/footer.php'); ?>
+<?php 
+$conexion->close();
+include(__DIR__ . '/../includes/footer.php'); 
+?>
