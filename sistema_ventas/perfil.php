@@ -1,7 +1,14 @@
 <?php
+// INCLUSIÓN DE ARCHIVOS Y VERIFICACIÓN DE SEGURIDAD
+// --------------------------------------------------
+
+// Incluye el archivo de configuración global, que probablemente inicia la sesión y define funciones y constantes.
 require_once('includes/config.php');
+// Llama a la función que verifica si el usuario ha iniciado sesión. Si no, lo redirige al login.
 requireAuth();
 
+// Incluye el encabezado de la página HTML, que contiene el <head>, la barra de navegación, etc.
+// Se incluye después de la lógica de autenticación para asegurar que solo los usuarios logueados vean la página.
 include('includes/header.php');
 ?>
 
@@ -757,3 +764,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <?php include('includes/footer.php'); ?>
+
