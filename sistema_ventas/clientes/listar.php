@@ -1,53 +1,58 @@
 <?php
-include('../includes/header.php');
-require_once('../includes/conexion.php');
+// INCLUSIÓN DE ARCHIVOS NECESARIOS
+// ---------------------------------
+include('../includes/header.php'); // Incluye el encabezado común de la página.
+require_once('../includes/conexion.php'); // Incluye el script de conexión a la base de datos.
 
-// Manejar mensajes de éxito/error
+// GESTIÓN DE MENSAJES DE FEEDBACK
+// --------------------------------
 $mensaje = '';
 $tipo_mensaje = '';
-
 if (isset($_GET['success'])) {
     $mensaje = $_GET['success'];
     $tipo_mensaje = 'success';
 }
-
 if (isset($_GET['error'])) {
     $mensaje = $_GET['error'];
     $tipo_mensaje = 'danger';
 }
 
-// Paginación
-$por_pagina = 10;
-$pagina = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
-$inicio = ($pagina - 1) * $por_pagina;
+// CONFIGURACIÓN DE LA PAGINACIÓN
+// ------------------------------
+$por_pagina = 10; // Número de clientes a mostrar por página.
+$pagina = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1; // Obtiene la página actual de la URL, o es 1 por defecto.
+$inicio = ($pagina - 1) * $por_pagina; // Calcula el registro de inicio para la consulta SQL (offset).
 
-// Búsqueda
+// LÓGICA DE BÚSQUEDA
+// -------------------
 $buscar = isset($_GET['buscar']) ? $_GET['buscar'] : '';
-$where_clause = '';
-$where_clause_count = ''; // Separado para el COUNT
-$params = [];
-$types = '';
+$where_clause = ''; // Cláusula WHERE para la consulta principal.
+$params = []; // Array para los parámetros de la consulta preparada.
+$types = ''; // String con los tipos de datos para bind_param.
 
+// Si hay un término de búsqueda, se construye la cláusula WHERE.
 if (!empty($buscar)) {
     $where_clause = "WHERE Nombre LIKE ? OR RazonSocial LIKE ? OR Telefono LIKE ? OR Ruc LIKE ?";
-    $where_clause_count = $where_clause; // Mismo WHERE para COUNT
-    $buscar_param = "%$buscar%";
+    $buscar_param = "%$buscar%"; // Se añaden comodines para buscar coincidencias parciales.
     $params = [$buscar_param, $buscar_param, $buscar_param, $buscar_param];
-    $types = 'ssss';
+    $types = 'ssss'; // 4 parámetros de tipo string.
 }
 
-// Contar total de clientes
-$sql_count = "SELECT COUNT(*) as total FROM clientes $where_clause_count";
+// OBTENCIÓN DE ESTADÍSTICAS Y TOTALES
+// -----------------------------------
+
+// 1. Contar el total de clientes que coinciden con la búsqueda.
+$sql_count = "SELECT COUNT(*) as total FROM clientes $where_clause";
 $stmt_count = $conexion->prepare($sql_count);
 if (!empty($params)) {
     $stmt_count->bind_param($types, ...$params);
 }
 $stmt_count->execute();
 $total_clientes = $stmt_count->get_result()->fetch_assoc()['total'];
-$total_paginas = ceil($total_clientes / $por_pagina);
+$total_paginas = ceil($total_clientes / $por_pagina); // Calcula el número total de páginas.
 
-// Contar clientes activos CON el WHERE de búsqueda
-$where_activos = $where_clause_count ? "$where_clause_count AND Inactivo = 0" : "WHERE Inactivo = 0";
+// 2. Contar clientes activos que coinciden con la búsqueda.
+$where_activos = $where_clause ? "$where_clause AND Inactivo = 0" : "WHERE Inactivo = 0";
 $sql_activos = "SELECT COUNT(*) as activos FROM clientes $where_activos";
 $stmt_activos = $conexion->prepare($sql_activos);
 if (!empty($params)) {
@@ -56,7 +61,9 @@ if (!empty($params)) {
 $stmt_activos->execute();
 $clientes_activos = $stmt_activos->get_result()->fetch_assoc()['activos'];
 
-// Obtener clientes con información adicional
+// OBTENCIÓN DE LOS CLIENTES PARA LA PÁGINA ACTUAL
+// -----------------------------------------------
+// Consulta principal para obtener los datos de los clientes con paginación y búsqueda.
 $sql = "SELECT 
             c.NroCliente, c.Nombre, c.RazonSocial, c.Telefono, c.Direccion, 
             c.Ruc, c.FechaAct, c.Inactivo,
@@ -67,20 +74,25 @@ $sql = "SELECT
         LEFT JOIN zonas z ON c.IdZona = z.IdZona
         $where_clause 
         ORDER BY c.Nombre ASC 
-        LIMIT ?, ?";
+        LIMIT ?, ?"; // LIMIT para la paginación.
 
 $stmt = $conexion->prepare($sql);
+
+// Se añaden los parámetros de LIMIT a la consulta preparada.
+$limit_params = [$inicio, $por_pagina];
+$limit_types = 'ii';
+
+// Combina los parámetros de búsqueda con los de paginación.
 if (!empty($params)) {
-    $params[] = $inicio;
-    $params[] = $por_pagina;
-    $types .= 'ii';
-    $stmt->bind_param($types, ...$params);
+    $final_params = array_merge($params, $limit_params);
+    $final_types = $types . $limit_types;
+    $stmt->bind_param($final_types, ...$final_params);
 } else {
-    $stmt->bind_param('ii', $inicio, $por_pagina);
+    $stmt->bind_param($limit_types, ...$limit_params);
 }
 
 $stmt->execute();
-$resultado = $stmt->get_result();
+$resultado = $stmt->get_result(); // Obtiene el resultado para iterar sobre él en el HTML.
 ?>
 
 <style>
