@@ -1,122 +1,176 @@
 <?php
-// Activar errores para depuración
+// CONFIGURACIÓN INICIAL Y DEPURACIÓN
+// -------------------------------------
+
+// Muestra todos los errores de PHP, útil para la fase de desarrollo.
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Registrar errores en log
+// Habilita el registro de errores en un archivo para no exponerlos en producción.
 ini_set('log_errors', 1);
-ini_set('error_log', __DIR__ . '/error.log');
+ini_set('error_log', __DIR__ . '/error.log'); // Guarda los errores en 'error.log' en el mismo directorio.
 
+// Incluye el archivo de configuración principal, que probablemente inicia la sesión y define funciones útiles.
 require_once('includes/config.php');
 
-// Si el usuario ya está logueado, redirigir
+// REDIRECCIÓN SI EL USUARIO YA ESTÁ AUTENTICADO
+// ---------------------------------------------
+
+// Comprueba si ya existe una sesión de usuario activa.
 if (isset($_SESSION['user_id'])) {
+    // Si es así, registra el evento y redirige al usuario a la página principal para evitar que vuelva a iniciar sesión.
     error_log("Usuario ya autenticado (ID: " . $_SESSION['user_id'] . "). Redirigiendo a index.php");
     redirect('index.php');
 }
 
-$error = '';
-$success = '';
+// INICIALIZACIÓN DE VARIABLES
+// ---------------------------
 
+$error = '';     // Variable para almacenar mensajes de error que se mostrarán al usuario.
+$success = ''; // Variable para almacenar mensajes de éxito.
+
+// PROCESAMIENTO DEL FORMULARIO DE LOGIN (CUANDO SE ENVÍA POR POST)
+// ----------------------------------------------------------------
+
+// Verifica si la solicitud al servidor se hizo usando el método POST.
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Recoge y limpia los datos del formulario. 'trim' elimina espacios en blanco al inicio y al final.
+    // El operador '??' de fusión de null asigna un string vacío si el campo no existe, para evitar errores.
     $usuario = trim($_POST['usuario'] ?? '');
     $password = trim($_POST['password'] ?? '');
     
+    // Registro en log para depuración.
     error_log("=== INICIO DE SESIÓN ===");
-    error_log("Usuario: $usuario");
-    error_log("Password recibido: " . (strlen($password) > 0 ? "Sí (" . strlen($password) . " caracteres)" : "No"));
+    error_log("Intento de login para el usuario: $usuario");
+
+    // VALIDACIÓN DE CAMPOS
+    // ---------------------
     
+    // Comprueba si el usuario o la contraseña están vacíos.
     if (empty($usuario) || empty($password)) {
         $error = "Por favor completa todos los campos";
-        error_log("Error: Campos vacíos");
+        error_log("Error de validación: El usuario o la contraseña están vacíos.");
     } else {
-        // Conectar a la base de datos
+        // PROCESO DE AUTENTICACIÓN CON BASE DE DATOS
+        // -----------------------------------------
         try {
+            // Establece la conexión con la base de datos.
             $conexion = conectarDB();
             
-            $sql = "SELECT id, nombre, usuario, password, rol FROM usuarios WHERE usuario = ?";
+            // Si la conexión falla, lanza una excepción.
+            if (!$conexion) {
+                throw new Exception("No se pudo conectar a la base de datos");
+            }
+            
+            // Prepara la consulta SQL para buscar al usuario.
+            // Se busca un usuario activo (Inactivo = 0) que coincida con el nombre de usuario proporcionado.
+            // Usar consultas preparadas (con '?') es una medida de seguridad crucial para prevenir inyecciones SQL.
+            $sql = "SELECT IdUsuario, NombreUsuario, Clave, Nivel, NombreInterno, Inactivo 
+                    FROM usuario 
+                    WHERE NombreUsuario = ? AND Inactivo = 0";
+            
             $stmt = $conexion->prepare($sql);
             
+            // Si la preparación de la consulta falla, lanza una excepción.
             if (!$stmt) {
                 throw new Exception("Error en la preparación de la consulta: " . $conexion->error);
             }
             
+            // Vincula el valor de la variable $usuario al primer '?' de la consulta preparada.
+            // "s" indica que el tipo de dato es un string (cadena de texto).
             $stmt->bind_param("s", $usuario);
+            
+            // Ejecuta la consulta.
             $stmt->execute();
+            
+            // Obtiene el conjunto de resultados de la consulta.
             $result = $stmt->get_result();
             
-            error_log("Consulta ejecutada. Resultados encontrados: " . $result->num_rows);
+            error_log("Consulta de usuario ejecutada. Filas encontradas: " . $result->num_rows);
             
+            // VERIFICACIÓN DEL USUARIO Y CONTRASEÑA
+            // -------------------------------------
+
+            // Si se encontró exactamente un usuario, procede a verificar la contraseña.
             if ($result->num_rows === 1) {
+                // Obtiene los datos del usuario como un array asociativo.
                 $user = $result->fetch_assoc();
-                error_log("Usuario encontrado en BD:");
-                error_log("- ID: " . $user['id']);
-                error_log("- Nombre: " . $user['nombre']);
-                error_log("- Usuario: " . $user['usuario']);
-                error_log("- Rol: " . $user['rol']);
-                error_log("- Hash almacenado: " . substr($user['password'], 0, 20) . "...");
                 
-                // Verificar contraseña
-                error_log("Verificando contraseña...");
+                // VERIFICACIÓN DE CONTRASEÑA (SOPORTA MÚLTIPLES MÉTODOS)
+                // ---------------------------------------------------------
+                $password_valida = false;
                 
-                if (password_verify($password, $user['password'])) {
-                    error_log("✅ Contraseña VÁLIDA para usuario: $usuario");
-                    
-                    // Regenerar ID de sesión por seguridad
+                // 1. Intenta verificar con 'password_verify'. Este es el método más seguro y moderno (para contraseñas hasheadas con password_hash).
+                if (password_verify($password, $user['Clave'])) {
+                    $password_valida = true;
+                    error_log("Contraseña verificada con éxito usando password_verify (hash seguro).");
+                } 
+                // 2. Si falla, intenta con MD5. Esto da soporte a sistemas antiguos (legacy) que guardaban contraseñas con MD5 (inseguro).
+                elseif (md5($password) === $user['Clave']) {
+                    $password_valida = true;
+                    error_log("Contraseña verificada con MD5 (método legacy, inseguro).");
+                }
+                // 3. Como último recurso, compara en texto plano. Extremadamente inseguro, solo para compatibilidad con sistemas muy antiguos.
+                elseif ($password === $user['Clave']) {
+                    $password_valida = true;
+                    error_log("ADVERTENCIA: Contraseña verificada en texto plano (¡MUY INSEGURO!).");
+                }
+                
+                // SI LA CONTRASEÑA ES VÁLIDA, INICIA LA SESIÓN
+                // ---------------------------------------------
+                if ($password_valida) {
+                    // Regenera el ID de la sesión para prevenir ataques de fijación de sesión.
                     session_regenerate_id(true);
                     
-                    // Iniciar sesión
-                    $_SESSION['user_id'] = $user['id'];
-                    $_SESSION['user_name'] = $user['nombre'];
-                    $_SESSION['user_role'] = $user['rol'];
-                    $_SESSION['login_time'] = time();
+                    // Almacena los datos del usuario en la variable de sesión '$_SESSION'.
+                    // Esto permite que el usuario permanezca autenticado en otras páginas.
+                    $_SESSION['user_id'] = $user['IdUsuario'];
+                    $_SESSION['user_name'] = $user['NombreInterno'];
+                    $_SESSION['user_username'] = $user['NombreUsuario'];
+                    $_SESSION['user_role'] = ($user['Nivel'] == 1) ? 'admin' : 'user'; // Asigna rol 'admin' o 'user' según el nivel.
+                    $_SESSION['user_level'] = $user['Nivel'];
+                    $_SESSION['login_time'] = time(); // Guarda la marca de tiempo del inicio de sesión.
                     
-                    error_log("✅ Sesión iniciada exitosamente:");
-                    error_log("Variables de sesión: " . print_r($_SESSION, true));
+                    error_log("Sesión iniciada para el usuario ID: " . $user['IdUsuario']);
                     
-                    // Registrar acceso
-                    try {
-                        $sql_log = "UPDATE usuarios SET ultimo_acceso = NOW() WHERE id = ?";
-                        $stmt_log = $conexion->prepare($sql_log);
-                        if ($stmt_log) {
-                            $stmt_log->bind_param("i", $user['id']);
-                            $stmt_log->execute();
-                            $stmt_log->close();
-                            error_log("✅ Último acceso actualizado");
-                        }
-                    } catch (Exception $e) {
-                        error_log("⚠️ Error al actualizar último acceso: " . $e->getMessage());
-                    }
-                    
+                    // Cierra la consulta y la conexión a la base de datos.
                     $stmt->close();
                     $conexion->close();
                     
-                    // Redirigir al dashboard
-                    error_log("🚀 Redirigiendo a index.php");
+                    // Redirige al usuario a la página principal del sistema.
+                    error_log("Redirigiendo a index.php tras login exitoso.");
                     redirect('index.php');
                     
                 } else {
-                    error_log("❌ Contraseña INCORRECTA para usuario: $usuario");
+                    // Si la contraseña no es correcta, guarda un mensaje de error.
+                    error_log("Contraseña INCORRECTA para el usuario: $usuario");
                     $error = "Credenciales incorrectas";
                 }
             } else {
-                error_log("❌ Usuario NO ENCONTRADO: $usuario");
-                $error = "Usuario no encontrado";
+                // Si no se encontró ningún usuario o está inactivo, guarda un mensaje de error.
+                error_log("Usuario no encontrado o inactivo: $usuario");
+                $error = "Usuario no encontrado o inactivo";
             }
             
+            // Cierra los recursos de la base de datos si todavía están abiertos.
             if (isset($stmt)) $stmt->close();
             if (isset($conexion)) $conexion->close();
             
         } catch (Exception $e) {
-            error_log("💥 Excepción en login: " . $e->getMessage());
+            // Captura cualquier excepción que haya ocurrido durante el proceso y la registra.
+            error_log("Excepción capturada en login.php: " . $e->getMessage());
             $error = "Error del sistema. Por favor intente más tarde.";
         }
     }
 } else {
-    error_log("Acceso a login.php - Método GET");
+    // Si la página se carga con un método que no es POST (ej. GET), simplemente se registra el acceso.
+    error_log("Acceso a login.php con método GET.");
 }
 
+// INCLUSIÓN DE LA CABECERA HTML
+// -----------------------------
+// Incluye el archivo que contiene la parte superior de la página web (<html>, <head>, etc.).
 include('includes/header.php');
 ?>
 
@@ -379,16 +433,6 @@ include('includes/header.php');
                 </div>
             <?php endif; ?>
             
-            <!-- Panel de información para testing -->
-            <div class="info-panel">
-                <h6 style="margin-bottom: 0.5rem;">🔧 Panel de Testing</h6>
-                <small>
-                    <strong>Base URL:</strong> <?= htmlspecialchars($base_url) ?><br>
-                    <strong>Sesión ID:</strong> <?= session_id() ?><br>
-                    <strong>Estado:</strong> <?= session_status() === PHP_SESSION_ACTIVE ? '✅ Activa' : '❌ Inactiva' ?>
-                </small>
-            </div>
-            
             <form method="POST" id="loginForm">
                 <div class="form-floating">
                     <input type="text" name="usuario" id="usuario" class="form-control" 
@@ -428,7 +472,7 @@ include('includes/header.php');
     </div>
 </div>
 
-<!-- Modal de ayuda mejorado -->
+<!-- Modal de ayuda -->
 <div class="modal fade" id="helpModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="border-radius: 15px; border: none;">
@@ -447,6 +491,7 @@ include('includes/header.php');
                         <li>Verifica que tu usuario y contraseña sean correctos</li>
                         <li>Asegúrate de no tener espacios al principio o final</li>
                         <li>Verifica que las mayúsculas y minúsculas sean correctas</li>
+                        <li>La contraseña puede ser: hash, MD5, o texto plano</li>
                         <li>Contacta al administrador si el problema persiste</li>
                     </ol>
                 </div>
@@ -467,7 +512,7 @@ include('includes/header.php');
 </div>
 
 <script>
-// Mostrar/ocultar contraseña con animación
+// Mostrar/ocultar contraseña
 document.getElementById('togglePassword').addEventListener('click', function() {
     const passwordInput = document.getElementById('password');
     const icon = this.querySelector('i');
@@ -475,7 +520,6 @@ document.getElementById('togglePassword').addEventListener('click', function() {
     
     passwordInput.setAttribute('type', type);
     
-    // Animación del icono
     icon.style.transform = 'scale(0.8)';
     setTimeout(() => {
         icon.className = type === 'password' ? 'bi bi-eye' : 'bi bi-eye-slash';
@@ -483,7 +527,7 @@ document.getElementById('togglePassword').addEventListener('click', function() {
     }, 150);
 });
 
-// Validación de formulario con efectos visuales
+// Validación de formulario
 document.getElementById('loginForm').addEventListener('submit', function(e) {
     const usuario = document.querySelector('input[name="usuario"]').value.trim();
     const password = document.getElementById('password').value.trim();
@@ -492,13 +536,11 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
     if (!usuario || !password) {
         e.preventDefault();
         
-        // Efecto de shake en el botón
         submitBtn.style.animation = 'shake 0.5s ease-in-out';
         setTimeout(() => {
             submitBtn.style.animation = '';
         }, 500);
         
-        // Mostrar mensaje de error con estilo
         const alertDiv = document.createElement('div');
         alertDiv.className = 'alert alert-danger-custom alert-custom';
         alertDiv.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i>Por favor completa todos los campos';
@@ -506,12 +548,10 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
         const form = document.getElementById('loginForm');
         form.parentNode.insertBefore(alertDiv, form);
         
-        // Remover el mensaje después de 3 segundos
         setTimeout(() => {
             alertDiv.remove();
         }, 3000);
     } else {
-        // Mostrar estado de carga en el botón
         submitBtn.innerHTML = '<i class="spinner-border spinner-border-sm me-2"></i>Verificando...';
         submitBtn.disabled = true;
     }
@@ -528,7 +568,7 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// Efectos de focus en los inputs
+// Efectos de focus
 document.querySelectorAll('.form-control').forEach(input => {
     input.addEventListener('focus', function() {
         this.parentElement.style.transform = 'translateY(-2px)';
