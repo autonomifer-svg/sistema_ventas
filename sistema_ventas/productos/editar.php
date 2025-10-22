@@ -1,22 +1,32 @@
 <?php
+// INCLUSIÓN DE ARCHIVOS Y VERIFICACIÓN DE SEGURIDAD
+// --------------------------------------------------
 require_once(__DIR__ . '/../includes/config.php');
 requireAuth();
 
+// INICIALIZACIÓN DE VARIABLES
+// ---------------------------
 $success = '';
 $error = '';
-$producto = null;
+$producto = null; // Almacenará los datos del producto a editar.
 
-// Verificar que se proporcione un ID
+// VALIDACIÓN DEL ID DEL PRODUCTO
+// ------------------------------
+// Es crucial verificar que se haya pasado un ID válido por la URL.
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+    // Si no hay un ID o no es numérico, redirige a la lista con un mensaje de error.
     redirect('productos/listar.php?error=ID de producto inválido');
 }
 
-$id = intval($_GET['id']);
+$id = intval($_GET['id']); // Convierte el ID a un entero por seguridad.
 
-// Obtener datos del producto
+// OBTENCIÓN DE DATOS DEL PRODUCTO Y PARA LOS SELECTS
+// --------------------------------------------------
 try {
     $conexion = conectarDB();
     
+    // Prepara la consulta para obtener los datos del producto específico.
+    // Se usan LEFT JOINs para obtener también los nombres de marca, rubro, etc.
     $sql = "SELECT p.*, m.Marca, r.Descripcion as Rubro, sr.Descripcion as SubRubro, tp.TipoProducto
             FROM productos p
             LEFT JOIN marca m ON p.IdMarca = m.IdMarca
@@ -27,51 +37,49 @@ try {
     $stmt = $conexion->prepare($sql);
     
     if (!$stmt) {
-        throw new Exception("Error en la preparación: " . $conexion->error);
+        throw new Exception("Error al preparar la consulta de producto: " . $conexion->error);
     }
     
     $stmt->bind_param("i", $id);
     $stmt->execute();
     $result = $stmt->get_result();
     
+    // Si no se encuentra ningún producto con ese ID, redirige.
     if ($result->num_rows === 0) {
         $stmt->close();
         $conexion->close();
         redirect('productos/listar.php?error=Producto no encontrado');
     }
     
+    // Guarda los datos del producto en el array $producto.
     $producto = $result->fetch_assoc();
     $stmt->close();
     
-    // Obtener datos para los selects
-    $sql_rubros = "SELECT IdRubro, Descripcion FROM rubros ORDER BY Descripcion";
-    $result_rubros = $conexion->query($sql_rubros);
-    
-    $sql_subrubros = "SELECT IdSubRubro, Descripcion FROM subrubro ORDER BY Descripcion";
-    $result_subrubros = $conexion->query($sql_subrubros);
-    
-    $sql_marcas = "SELECT IdMarca, Marca FROM marca ORDER BY Marca";
-    $result_marcas = $conexion->query($sql_marcas);
-    
-    $sql_tipos = "SELECT IdTipoProducto, TipoProducto FROM tipoproducto ORDER BY TipoProducto";
-    $result_tipos = $conexion->query($sql_tipos);
+    // Obtiene los datos para rellenar los menús desplegables (selects) del formulario.
+    $result_rubros = $conexion->query("SELECT IdRubro, Descripcion FROM rubros ORDER BY Descripcion");
+    $result_subrubros = $conexion->query("SELECT IdSubRubro, Descripcion FROM subrubro ORDER BY Descripcion");
+    $result_marcas = $conexion->query("SELECT IdMarca, Marca FROM marca ORDER BY Marca");
+    $result_tipos = $conexion->query("SELECT IdTipoProducto, TipoProducto FROM tipoproducto ORDER BY TipoProducto");
     
 } catch (Exception $e) {
-    error_log("Error al obtener producto: " . $e->getMessage());
-    redirect('productos/listar.php?error=Error al cargar producto');
+    error_log("Error al obtener producto para editar: " . $e->getMessage());
+    redirect('productos/listar.php?error=Error fatal al cargar el producto');
 }
 
-// Actualizar producto
+// PROCESAMIENTO DE LA ACTUALIZACIÓN (MÉTODO POST)
+// ------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Recolección y saneamiento de los datos del formulario.
     $descripcion = trim($_POST['nombre'] ?? '');
     $precio_venta = floatval($_POST['precio'] ?? 0);
+    $precio_costo = floatval($_POST['precio_costo'] ?? 0);
     $stock = floatval($_POST['stock'] ?? 0);
     $id_rubro = !empty($_POST['id_rubro']) ? intval($_POST['id_rubro']) : null;
     $id_subrubro = !empty($_POST['id_subrubro']) ? intval($_POST['id_subrubro']) : null;
     $id_marca = !empty($_POST['id_marca']) ? intval($_POST['id_marca']) : null;
     $id_tipo_producto = !empty($_POST['id_tipo_producto']) ? intval($_POST['id_tipo_producto']) : 1;
 
-    // Validaciones
+    // Validaciones del lado del servidor.
     if (empty($descripcion)) {
         $error = "El nombre del producto es obligatorio";
     } elseif ($precio_venta <= 0) {
@@ -80,34 +88,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "El stock no puede ser negativo";
     } else {
         try {
-            // Calcular precio costo (70% del precio venta)
-            $precio_costo = $precio_venta * 0.7;
             
-            $sql = "UPDATE productos SET 
-                        Descripcion = ?, 
-                        PrecioVenta = ?, 
-                        PrecioCosto = ?,
-                        `100` = ?,
-                        IdRubro = ?,
-                        IdSubRubro = ?,
-                        IdMarca = ?,
-                        IdTipoProducto = ?
-                    WHERE CodigoNum = ?";
-            $stmt = $conexion->prepare($sql);
+            // Prepara la consulta de actualización (UPDATE).
+            $sql_update = "UPDATE productos SET 
+                            Descripcion = ?, PrecioVenta = ?, PrecioCosto = ?, `100` = ?,
+                            IdRubro = ?, IdSubRubro = ?, IdMarca = ?, IdTipoProducto = ?
+                        WHERE CodigoNum = ?";
+            $stmt_update = $conexion->prepare($sql_update);
             
-            if (!$stmt) {
-                throw new Exception("Error en la preparación: " . $conexion->error);
+            if (!$stmt_update) {
+                throw new Exception("Error en la preparación de la actualización: " . $conexion->error);
             }
             
-            $stmt->bind_param("sdddiiii", 
+            // Vincula los 9 parámetros a la consulta preparada.
+            $stmt_update->bind_param("sdddiiiii", 
                 $descripcion, $precio_venta, $precio_costo, $stock,
                 $id_rubro, $id_subrubro, $id_marca, $id_tipo_producto, $id
             );
             
-            if ($stmt->execute()) {
+            // Ejecuta la actualización.
+            if ($stmt_update->execute()) {
                 $success = "Producto actualizado exitosamente";
                 
-                // Actualizar datos locales
+                // Actualiza el array $producto con los nuevos datos para que se reflejen en el formulario sin recargar la página.
                 $producto['Descripcion'] = $descripcion;
                 $producto['PrecioVenta'] = $precio_venta;
                 $producto['PrecioCosto'] = $precio_costo;
@@ -119,10 +122,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 error_log("Producto actualizado: CodigoNum=$id, Descripcion='$descripcion'");
             } else {
-                throw new Exception("Error al ejecutar: " . $stmt->error);
+                throw new Exception("Error al ejecutar la actualización: " . $stmt_update->error);
             }
             
-            $stmt->close();
+            $stmt_update->close();
             
         } catch (Exception $e) {
             $error = "Error al actualizar el producto: " . $e->getMessage();
@@ -131,41 +134,107 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+// INCLUSIÓN DEL ENCABEZADO HTML
+// -----------------------------
 include(__DIR__ . '/../includes/header.php');
 ?>
 
-<div class="row">
-    <div class="col-md-8">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2><i class="bi bi-pencil"></i> Editar Producto</h2>
-            <div>
-                <a href="<?= $base_url ?>productos/listar.php" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left"></i> Volver a Lista
-                </a>
-                <a href="<?= $base_url ?>productos/crear.php" class="btn btn-success">
-                    <i class="bi bi-plus-circle"></i> Nuevo Producto
-                </a>
-            </div>
+<style>
+.modern-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.modern-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.gradient-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 15px 15px 0 0 !important;
+}
+
+.btn-modern {
+    border-radius: 25px;
+    padding: 10px 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.form-control, .form-select {
+    border-radius: 10px;
+    border: 2px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.info-card {
+    background: linear-gradient(135deg, #f8f9ff 0%, #e8ecff 100%);
+    border: none;
+    border-radius: 15px;
+}
+
+.danger-zone {
+    background: linear-gradient(135deg, #fff5f5 0%, #ffe5e5 100%);
+    border: 2px solid #ff6b6b;
+    border-radius: 15px;
+}
+
+.badge-custom {
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.alert-modern {
+    border: none;
+    border-radius: 12px;
+    border-left: 4px solid;
+}
+</style>
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2><i class="bi bi-pencil-square"></i> Editar Producto</h2>
+            <p class="text-muted mb-0">Actualiza la información del producto</p>
         </div>
+        <div>
+            <a href="<?= $base_url ?>productos/listar.php" class="btn btn-outline-secondary btn-modern me-2">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
+            <a href="<?= $base_url ?>productos/crear.php" class="btn btn-success btn-modern">
+                <i class="bi bi-plus-circle"></i> Nuevo
+            </a>
+        </div>
+    </div>
 
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">Actualizar Información</h5>
-            </div>
-            <div class="card-body">
-                <?php if ($success): ?>
-                    <div class="alert alert-success alert-dismissible fade show">
-                        <i class="bi bi-check-circle"></i> <?= htmlspecialchars($success) ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                <?php endif; ?>
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card modern-card shadow">
+                <div class="card-header gradient-header">
+                    <h5 class="mb-0"><i class="bi bi-box-seam"></i> Información del Producto</h5>
+                </div>
+                <div class="card-body p-4">
+                    <?php if ($success): ?>
+                        <div class="alert alert-success alert-modern border-success">
+                            <i class="bi bi-check-circle-fill me-2"></i> <?= htmlspecialchars($success) ?>
+                        </div>
+                    <?php endif; ?>
 
-                <?php if ($error): ?>
-                    <div class="alert alert-danger alert-dismissible fade show">
-                        <i class="bi bi-exclamation-triangle"></i> <?= htmlspecialchars($error) ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                <?php endif; ?>
+                    <?php if ($error): ?>
+                        <div class="alert alert-danger alert-modern border-danger">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i> <?= htmlspecialchars($error) ?>
+                        </div>
+                    <?php endif; ?>
 
                 <form method="POST" id="editarForm">
                     <div class="mb-3">
@@ -175,12 +244,17 @@ include(__DIR__ . '/../includes/header.php');
                     </div>
                     
                     <div class="row">
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
                             <label class="form-label">Precio de Venta ($) <span class="text-danger">*</span></label>
                             <input type="number" step="0.01" min="0.01" class="form-control" name="precio" 
                                    value="<?= $producto['PrecioVenta'] ?>" required>
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Precio Costo ($)</label>
+                            <input type="number" step="0.01" min="0" class="form-control" name="precio_costo" 
+                                   value="<?= $producto['PrecioCosto'] ?>">
+                        </div>
+                        <div class="col-md-4 mb-3">
                             <label class="form-label">Stock <span class="text-danger">*</span></label>
                             <input type="number" step="0.01" min="0" class="form-control" name="stock" 
                                    value="<?= $producto['100'] ?>" required>
@@ -330,3 +404,4 @@ document.getElementById('editarForm').addEventListener('submit', function(e) {
 $conexion->close();
 include(__DIR__ . '/../includes/footer.php'); 
 ?>
+
