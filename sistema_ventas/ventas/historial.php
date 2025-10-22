@@ -1,36 +1,40 @@
 <?php
+// INCLUSIÓN DE ARCHIVOS Y VERIFICACIÓN DE SEGURIDAD
+// --------------------------------------------------
 require_once(__DIR__ . '/../includes/config.php');
 requireAuth();
 require_once(__DIR__ . '/../includes/conexion.php');
 
 include(__DIR__ . '/../includes/header.php');
 
-// Obtener parámetros de filtro
+// --- LÓGICA DE FILTRADO Y BÚSQUEDA ---
+
+// 1. OBTENER PARÁMETROS DE FILTRO DE LA URL
 $fecha_inicio = isset($_GET['fecha_inicio']) ? $_GET['fecha_inicio'] : '';
 $fecha_fin = isset($_GET['fecha_fin']) ? $_GET['fecha_fin'] : '';
 $cliente_id = isset($_GET['cliente_id']) ? intval($_GET['cliente_id']) : 0;
 
-// Construir consulta con filtros
+// 2. CONSTRUIR LA CONSULTA SQL BASE
+// Se seleccionan las ventas no anuladas y se une con la tabla de clientes para obtener el nombre.
 $sql = "SELECT s.IdSalida, c.Nombre AS cliente, s.Fecha, s.Total 
         FROM salida s
         INNER JOIN clientes c ON s.NroCliente = c.NroCliente
         WHERE s.Anulado = 0";
 
-$params = [];
-$types = '';
+// 3. AÑADIR CONDICIONES DE FILTRO DINÁMICAMENTE
+$params = []; // Array para los parámetros de la consulta preparada.
+$types = '';   // String para los tipos de datos de los parámetros.
 
 if (!empty($fecha_inicio)) {
     $sql .= " AND DATE(s.Fecha) >= ?";
     $params[] = $fecha_inicio;
     $types .= 's';
 }
-
 if (!empty($fecha_fin)) {
     $sql .= " AND DATE(s.Fecha) <= ?";
     $params[] = $fecha_fin;
     $types .= 's';
 }
-
 if ($cliente_id > 0) {
     $sql .= " AND s.NroCliente = ?";
     $params[] = $cliente_id;
@@ -39,51 +43,41 @@ if ($cliente_id > 0) {
 
 $sql .= " ORDER BY s.Fecha DESC";
 
-// Preparar y ejecutar consulta
+// 4. PREPARAR Y EJECUTAR LA CONSULTA PRINCIPAL
 $stmt = $conexion->prepare($sql);
-
 if (!empty($params)) {
     $stmt->bind_param($types, ...$params);
 }
-
 $stmt->execute();
-$ventas = $stmt->get_result();
+$ventas = $stmt->get_result(); // Resultado para mostrar en la tabla.
 
-// Calcular total general
-$total_general = 0;
-$contador = 0;
+// --- CÁLCULO DE ESTADÍSTICAS ADICIONALES ---
 
-// Obtener clientes para el filtro
-$sql_clientes = "SELECT NroCliente, Nombre FROM clientes WHERE Inactivo = 0 ORDER BY Nombre";
-$result_clientes = $conexion->query($sql_clientes);
+// Obtener todos los clientes para el menú desplegable del filtro.
+$result_clientes = $conexion->query("SELECT NroCliente, Nombre FROM clientes WHERE Inactivo = 0 ORDER BY Nombre");
 $todos_clientes = [];
-if ($result_clientes && $result_clientes->num_rows > 0) {
+if ($result_clientes) {
     while ($row = $result_clientes->fetch_assoc()) {
         $todos_clientes[] = $row;
     }
 }
 
-// Calcular estadísticas adicionales
-$ventas_hoy = 0;
-$ventas_mes = 0;
+// Calcular ventas de hoy y del mes actual.
 $hoy = date('Y-m-d');
 $primer_dia_mes = date('Y-m-01');
 
-// Obtener ventas de hoy
-$sql_hoy = "SELECT COUNT(*) as ventas_hoy FROM salida WHERE DATE(Fecha) = ? AND Anulado = 0";
+$sql_hoy = "SELECT COUNT(*) as total FROM salida WHERE DATE(Fecha) = ? AND Anulado = 0";
 $stmt_hoy = $conexion->prepare($sql_hoy);
 $stmt_hoy->bind_param('s', $hoy);
 $stmt_hoy->execute();
-$result_hoy = $stmt_hoy->get_result()->fetch_assoc();
-$ventas_hoy = $result_hoy['ventas_hoy'];
+$ventas_hoy = $stmt_hoy->get_result()->fetch_assoc()['total'];
 
-// Obtener ventas del mes
-$sql_mes = "SELECT COUNT(*) as ventas_mes FROM salida WHERE DATE(Fecha) >= ? AND Anulado = 0";
+$sql_mes = "SELECT COUNT(*) as total FROM salida WHERE DATE(Fecha) >= ? AND Anulado = 0";
 $stmt_mes = $conexion->prepare($sql_mes);
 $stmt_mes->bind_param('s', $primer_dia_mes);
 $stmt_mes->execute();
-$result_mes = $stmt_mes->get_result()->fetch_assoc();
-$ventas_mes = $result_mes['ventas_mes'];
+$ventas_mes = $stmt_mes->get_result()->fetch_assoc()['total'];
+
 ?>
 
 <style>
@@ -323,7 +317,10 @@ $ventas_mes = $result_mes['ventas_mes'];
 
 <div class="card main-table-card">
     <div class="card-body p-0">
-        <?php if ($ventas->num_rows > 0): ?>
+        <?php if ($ventas->num_rows > 0): 
+            $total_general = 0;
+            $contador = 0;
+        ?>
             <div class="table-responsive">
                 <table class="table modern-table mb-0">
                     <thead class="table-header">
@@ -417,3 +414,4 @@ $ventas_mes = $result_mes['ventas_mes'];
 </div>
 
 <?php include(__DIR__ . '/../includes/footer.php'); ?>
+
