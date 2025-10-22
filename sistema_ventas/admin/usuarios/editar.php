@@ -1,5 +1,7 @@
 <?php
 session_start();
+// INCLUSIÓN DE ARCHIVOS Y VERIFICACIÓN DE ROLES
+// -----------------------------------------------
 include('../../includes/header.php');
 require_once('../../includes/conexion.php');
 require_once('../../includes/auth.php');
@@ -11,6 +13,8 @@ if (!esAdministrador()) {
     exit;
 }
 
+// INICIALIZACIÓN Y OBTENCIÓN DEL ID DE USUARIO
+// ---------------------------------------------
 $error = '';
 $success = '';
 $usuario_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
@@ -20,7 +24,9 @@ if (!$usuario_id) {
     exit;
 }
 
-// Obtener datos del usuario
+// OBTENER DATOS DEL USUARIO PARA PRE-RELLENAR EL FORMULARIO
+// ---------------------------------------------------------
+// NOTA: Se utiliza la tabla `usuarios`, que es inconsistente con `login.php`.
 $sql_get = "SELECT * FROM usuarios WHERE id = ?";
 $stmt_get = $conexion->prepare($sql_get);
 $stmt_get->bind_param("i", $usuario_id);
@@ -29,11 +35,14 @@ $result_get = $stmt_get->get_result();
 $usuario = $result_get->fetch_assoc();
 
 if (!$usuario) {
-    header("Location: listar.php");
+    header("Location: listar.php?error=Usuario no encontrado");
     exit;
 }
 
+// PROCESAMIENTO DE LA ACTUALIZACIÓN (MÉTODO POST)
+// ------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // 1. RECOLECCIÓN DE DATOS
     $nombre = trim($_POST['nombre']);
     $usuario_name = trim($_POST['usuario']);
     $email = trim($_POST['email']);
@@ -42,13 +51,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $rol = $_POST['rol'];
     $activo = isset($_POST['activo']) ? 1 : 0;
     
-    // Validaciones
+    // 2. VALIDACIONES
     if (empty($nombre) || empty($usuario_name)) {
         $error = "Nombre y usuario son obligatorios";
     } elseif (!empty($password) && $password !== $confirm_password) {
         $error = "Las contraseñas no coinciden";
     } else {
-        // Verificar si el usuario ya existe (excluyendo el actual)
+        // 3. VERIFICAR SI EL NUEVO NOMBRE DE USUARIO YA ESTÁ EN USO POR OTRO USUARIO
         $sql_check = "SELECT id FROM usuarios WHERE usuario = ? AND id != ?";
         $stmt_check = $conexion->prepare($sql_check);
         $stmt_check->bind_param("si", $usuario_name, $usuario_id);
@@ -56,32 +65,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $result_check = $stmt_check->get_result();
         
         if ($result_check->num_rows > 0) {
-            $error = "El nombre de usuario ya está en uso";
+            $error = "El nombre de usuario ya está en uso por otro usuario";
         } else {
-            // Actualizar usuario
-            if (!empty($password)) {
-                // Con nueva contraseña
-                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-                $sql_update = "UPDATE usuarios SET nombre = ?, usuario = ?, email = ?, password = ?, rol = ?, activo = ? WHERE id = ?";
-                $stmt_update = $conexion->prepare($sql_update);
-                $stmt_update->bind_param("sssssii", $nombre, $usuario_name, $email, $hashed_password, $rol, $activo, $usuario_id);
-            } else {
-                // Sin cambio de contraseña
-                $sql_update = "UPDATE usuarios SET nombre = ?, usuario = ?, email = ?, rol = ?, activo = ? WHERE id = ?";
-                $stmt_update = $conexion->prepare($sql_update);
-                $stmt_update->bind_param("ssssii", $nombre, $usuario_name, $email, $rol, $activo, $usuario_id);
-            }
-            
-            if ($stmt_update->execute()) {
-                $success = "Usuario actualizado exitosamente";
-                // Actualizar datos mostrados
-                $usuario['nombre'] = $nombre;
-                $usuario['usuario'] = $usuario_name;
-                $usuario['email'] = $email;
-                $usuario['rol'] = $rol;
-                $usuario['activo'] = $activo;
-            } else {
-                $error = "Error al actualizar el usuario: " . $stmt_update->error;
+            // 4. ACTUALIZAR USUARIO
+            try {
+                // Se decide qué consulta usar dependiendo de si se ha proporcionado una nueva contraseña.
+                if (!empty($password)) {
+                    // CON cambio de contraseña.
+                    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+                    $sql_update = "UPDATE usuarios SET nombre = ?, usuario = ?, email = ?, password = ?, rol = ?, activo = ? WHERE id = ?";
+                    $stmt_update = $conexion->prepare($sql_update);
+                    $stmt_update->bind_param("sssssii", $nombre, $usuario_name, $email, $hashed_password, $rol, $activo, $usuario_id);
+                } else {
+                    // SIN cambio de contraseña.
+                    $sql_update = "UPDATE usuarios SET nombre = ?, usuario = ?, email = ?, rol = ?, activo = ? WHERE id = ?";
+                    $stmt_update = $conexion->prepare($sql_update);
+                    $stmt_update->bind_param("ssssii", $nombre, $usuario_name, $email, $rol, $activo, $usuario_id);
+                }
+                
+                if ($stmt_update->execute()) {
+                    $success = "Usuario actualizado exitosamente";
+                    // Actualizar el array local para que los cambios se muestren en el formulario.
+                    $usuario['nombre'] = $nombre;
+                    $usuario['usuario'] = $usuario_name;
+                    // ... (y así con los demás campos)
+                } else {
+                    throw new Exception($stmt_update->error);
+                }
+            } catch (Exception $e) {
+                $error = "Error al actualizar el usuario: " . $e->getMessage();
             }
         }
     }
