@@ -1,35 +1,51 @@
 <?php
+// INCLUSIÓN DE ARCHIVOS Y VERIFICACIÓN DE SEGURIDAD
+// --------------------------------------------------
 require_once(__DIR__ . '/../includes/config.php');
 requireAuth();
 
-$success = '';
-$error = '';
+// INICIALIZACIÓN DE VARIABLES
+// ---------------------------
+$success = ''; // Para mensajes de éxito.
+$error = '';   // Para mensajes de error.
 
-// Obtener datos para los selects
+// OBTENCIÓN DE DATOS PARA LOS MENÚS DESPLEGABLES (SELECTS)
+// ------------------------------------------------------
+// Se conecta a la base de datos para obtener las listas de rubros, marcas, etc.
+// Esto permite que el formulario muestre opciones dinámicas desde la base de datos.
 $conexion = conectarDB();
 
+// Consulta para obtener todos los rubros, ordenados por descripción.
 $sql_rubros = "SELECT IdRubro, Descripcion FROM rubros ORDER BY Descripcion";
 $result_rubros = $conexion->query($sql_rubros);
 
+// Consulta para obtener todos los sub-rubros.
 $sql_subrubros = "SELECT IdSubRubro, Descripcion FROM subrubro ORDER BY Descripcion";
 $result_subrubros = $conexion->query($sql_subrubros);
 
+// Consulta para obtener todas las marcas.
 $sql_marcas = "SELECT IdMarca, Marca FROM marca ORDER BY Marca";
 $result_marcas = $conexion->query($sql_marcas);
 
+// Consulta para obtener todos los tipos de producto.
 $sql_tipos = "SELECT IdTipoProducto, TipoProducto FROM tipoproducto ORDER BY TipoProducto";
 $result_tipos = $conexion->query($sql_tipos);
 
+// PROCESAMIENTO DEL FORMULARIO AL ENVIAR (MÉTODO POST)
+// -----------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Recolección y saneamiento de los datos del formulario.
     $descripcion = trim($_POST['nombre'] ?? '');
     $precio_venta = floatval($_POST['precio'] ?? 0);
     $stock = floatval($_POST['stock'] ?? 0);
+    // Para los campos opcionales (IDs de tablas foráneas), se convierte a entero o se asigna null si está vacío.
     $id_rubro = !empty($_POST['id_rubro']) ? intval($_POST['id_rubro']) : null;
     $id_subrubro = !empty($_POST['id_subrubro']) ? intval($_POST['id_subrubro']) : null;
     $id_marca = !empty($_POST['id_marca']) ? intval($_POST['id_marca']) : null;
-    $id_tipo_producto = !empty($_POST['id_tipo_producto']) ? intval($_POST['id_tipo_producto']) : 1;
+    $id_tipo_producto = !empty($_POST['id_tipo_producto']) ? intval($_POST['id_tipo_producto']) : 1; // Valor por defecto si no se selecciona.
 
-    // Validaciones
+    // VALIDACIONES DEL LADO DEL SERVIDOR
+    // ----------------------------------
     if (empty($descripcion)) {
         $error = "El nombre del producto es obligatorio";
     } elseif ($precio_venta <= 0) {
@@ -37,15 +53,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($stock < 0) {
         $error = "El stock no puede ser negativo";
     } else {
+        // INSERCIÓN EN LA BASE DE DATOS
+        // -----------------------------
         try {
-            // Obtener el siguiente CodigoNum
+            // 1. Generar un nuevo ID numérico para el producto.
+            // Se busca el máximo `CodigoNum` existente y se le suma 1 para asegurar un ID único.
             $sql_max = "SELECT COALESCE(MAX(CodigoNum), 0) + 1 as siguiente FROM productos";
             $result_max = $conexion->query($sql_max);
             $codigo_num = $result_max->fetch_assoc()['siguiente'];
             
-            // Generar código automático
+            // 2. Generar un código de producto legible (ej. PROD-000123).
             $codigo = "PROD-" . str_pad($codigo_num, 6, '0', STR_PAD_LEFT);
             
+            // 3. Preparar la consulta de inserción para prevenir inyecciones SQL.
             $sql = "INSERT INTO productos (
                         CodigoNum, Codigo, Descripcion, PrecioVenta, PrecioCosto,
                         IdTipoProducto, IdRubro, IdSubRubro, IdMarca,
@@ -55,39 +75,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $conexion->prepare($sql);
             
             if (!$stmt) {
-                throw new Exception("Error en la preparación: " . $conexion->error);
+                throw new Exception("Error en la preparación de la consulta: " . $conexion->error);
             }
             
-            // PrecioCosto = PrecioVenta por defecto (puedes ajustarlo)
-            $precio_costo = $precio_venta * 0.7; // Asumiendo 30% de margen
+            // 4. Calcular un precio de costo por defecto (ej. 70% del precio de venta).
+            $precio_costo = $precio_venta * 0.7;
             
+            // 5. Vincular los parámetros a la consulta preparada.
+            // "issddiiid" define los tipos de datos: (i)nteger, (s)tring, (d)ouble.
             $stmt->bind_param("issddiiid", 
                 $codigo_num, $codigo, $descripcion, $precio_venta, $precio_costo,
                 $id_tipo_producto, $id_rubro, $id_subrubro, $id_marca, $stock
             );
             
+            // 6. Ejecutar la consulta.
             if ($stmt->execute()) {
                 $success = "Producto '$descripcion' creado exitosamente (Código: $codigo)";
-                
-                // Log de éxito
                 error_log("Producto creado: CodigoNum=$codigo_num, Descripcion='$descripcion'");
                 
-                // Limpiar formulario
+                // Limpiar los campos del formulario para permitir una nueva entrada.
                 $descripcion = '';
                 $precio_venta = $stock = 0;
             } else {
-                throw new Exception("Error al ejecutar: " . $stmt->error);
+                throw new Exception("Error al ejecutar la inserción: " . $stmt->error);
             }
             
             $stmt->close();
             
         } catch (Exception $e) {
+            // Capturar y manejar cualquier error durante el proceso.
             $error = "Error al crear el producto: " . $e->getMessage();
             error_log("Error en crear producto: " . $e->getMessage());
         }
     }
 }
 
+// INCLUSIÓN DEL ENCABEZADO HTML
+// -----------------------------
 include(__DIR__ . '/../includes/header.php');
 ?>
 
@@ -480,3 +504,4 @@ include(__DIR__ . '/../includes/footer.php');
                                         <?= htmlspecialchars($subrubro['Descripcion']) ?>
                                     </option>
                                 <?php endwhile; ?>
+
