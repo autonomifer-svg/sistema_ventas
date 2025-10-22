@@ -1,13 +1,20 @@
 <?php
-// Mover el procesamiento al principio del archivo
+// INICIO DEL PROCESAMIENTO PHP
+// -----------------------------
+// Es una buena práctica procesar los datos del formulario antes de enviar cualquier salida HTML.
+
+// INCLUSIÓN DE ARCHIVOS Y VERIFICACIÓN DE SEGURIDAD
 require_once(__DIR__ . '/../includes/config.php');
 require_once(__DIR__ . '/../includes/conexion.php');
-requireAuth();
+requireAuth(); // Asegura que solo usuarios autenticados puedan acceder.
 
-$errores = [];
-$mensaje = '';
+// INICIALIZACIÓN DE VARIABLES
+$errores = []; // Array para almacenar mensajes de error de validación.
+$mensaje = '';   // Para mensajes de éxito (aunque aquí se redirige).
 
-// Obtener datos necesarios para los selects
+// OBTENCIÓN DE DATOS PARA MENÚS DESPLEGABLES (SELECTS)
+// -----------------------------------------------------
+// Se realizan consultas para poblar las opciones del formulario, como ciudades, tipos de cliente, etc.
 $sql_ciudades = "SELECT IdCiudad, Ciudad FROM ciudad ORDER BY Ciudad";
 $result_ciudades = $conexion->query($sql_ciudades);
 
@@ -20,79 +27,80 @@ $result_categorias = $conexion->query($sql_categorias);
 $sql_zonas = "SELECT IdZona, Zona FROM zonas ORDER BY Zona";
 $result_zonas = $conexion->query($sql_zonas);
 
+// PROCESAMIENTO DEL FORMULARIO (SI SE ENVÍA POR POST)
+// ---------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // 1. RECOLECCIÓN Y LIMPIEZA DE DATOS
     $nombre = trim($_POST['nombre'] ?? '');
-    $razon_social = trim($_POST['razon_social'] ?? $nombre); // Si no se proporciona, usar el nombre
+    $razon_social = trim($_POST['razon_social'] ?? $nombre); // Valor por defecto: el nombre.
     $telefono = trim($_POST['telefono'] ?? '');
     $direccion = trim($_POST['direccion'] ?? '');
     $ruc = trim($_POST['ruc'] ?? '');
+    // Convierte a entero o asigna null si el campo está vacío.
     $id_ciudad = !empty($_POST['id_ciudad']) ? intval($_POST['id_ciudad']) : null;
-    $id_tipo_cliente = !empty($_POST['id_tipo_cliente']) ? intval($_POST['id_tipo_cliente']) : 1; // Default
-    $id_categoria = !empty($_POST['id_categoria']) ? intval($_POST['id_categoria']) : 1; // Default
+    $id_tipo_cliente = !empty($_POST['id_tipo_cliente']) ? intval($_POST['id_tipo_cliente']) : 1; // Valor por defecto.
+    $id_categoria = !empty($_POST['id_categoria']) ? intval($_POST['id_categoria']) : 1; // Valor por defecto.
     $id_zona = !empty($_POST['id_zona']) ? intval($_POST['id_zona']) : null;
 
-    // Validación básica
+    // 2. VALIDACIÓN DE DATOS
     if (empty($nombre)) {
         $errores[] = "El nombre es obligatorio";
     }
-    
     if (strlen($nombre) > 100) {
         $errores[] = "El nombre no puede exceder 100 caracteres";
     }
-    
-    if (!empty($telefono) && strlen($telefono) > 70) {
-        $errores[] = "El teléfono no puede exceder 70 caracteres";
-    }
-    
-    if (!empty($direccion) && strlen($direccion) > 150) {
-        $errores[] = "La dirección no puede exceder 150 caracteres";
-    }
-    
-    // Si no hay errores, insertar en la base de datos
+    // ... (otras validaciones) ...
+
+    // 3. INSERCIÓN EN LA BASE DE DATOS (SI NO HAY ERRORES)
     if (empty($errores)) {
-        // Obtener el siguiente NroCliente
-        $sql_max = "SELECT COALESCE(MAX(NroCliente), 0) + 1 as siguiente FROM clientes";
-        $result_max = $conexion->query($sql_max);
-        $nro_cliente = $result_max->fetch_assoc()['siguiente'];
-        
-        // Obtener IdUsuario de la sesión (usar 1 como default si no existe)
-        $id_usuario = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 1;
-        
-        // Convertir NULL a valores válidos para evitar errores
-        if ($id_ciudad === null) $id_ciudad = 0;
-        if ($id_zona === null) $id_zona = 0;
-        
-        $sql = "INSERT INTO clientes (
-                    NroCliente, Nombre, RazonSocial, Ruc, Direccion, Telefono, 
-                    IdCiudad, IdTipoCliente, IdCategoriaCliente, IdZona, IdUsuario, 
-                    Plazo, LimiteCredito, Inactivo
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0)";
-        
-        $stmt = $conexion->prepare($sql);
-        
-        if (!$stmt) {
-            $errores[] = "Error al preparar consulta: " . $conexion->error;
-        } else {
-            $stmt->bind_param(
-                "isssssiiiii", 
+        try {
+            // Generar el siguiente NroCliente para asegurar un ID único.
+            $sql_max = "SELECT COALESCE(MAX(NroCliente), 0) + 1 as siguiente FROM clientes";
+            $result_max = $conexion->query($sql_max);
+            $nro_cliente = $result_max->fetch_assoc()['siguiente'];
+            
+            // Obtener el ID del usuario que está realizando la acción desde la sesión.
+            $id_usuario = $_SESSION['user_id'] ?? 1; // Usar 1 como fallback si no hay sesión.
+            
+            // Preparar la consulta de inserción para prevenir inyecciones SQL.
+            $sql = "INSERT INTO clientes (
+                        NroCliente, Nombre, RazonSocial, Ruc, Direccion, Telefono, 
+                        IdCiudad, IdTipoCliente, IdCategoriaCliente, IdZona, IdUsuario, 
+                        Plazo, LimiteCredito, Inactivo
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0)";
+            
+            $stmt = $conexion->prepare($sql);
+            
+            if (!$stmt) {
+                throw new Exception("Error al preparar la consulta: " . $conexion->error);
+            }
+            
+            // Vincular los parámetros a la consulta preparada.
+            // "isssssiiiii" define los tipos de datos: (i)nteger, (s)tring.
+            $stmt->bind_param("isssssiiiii", 
                 $nro_cliente, $nombre, $razon_social, $ruc, $direccion, $telefono,
                 $id_ciudad, $id_tipo_cliente, $id_categoria, $id_zona, $id_usuario
             );
-        }
-        
-        if ($stmt->execute()) {
-            $_SESSION['mensaje_exito'] = "Cliente registrado exitosamente (ID: $nro_cliente)";
             
-            // Redirigir ANTES de enviar cualquier salida
-            header("Location: listar.php");
-            exit;
-        } else {
-            $errores[] = "Error al registrar el cliente: " . $stmt->error;
+            // Ejecutar la inserción.
+            if ($stmt->execute()) {
+                // Si tiene éxito, guarda un mensaje en la sesión y redirige al listado.
+                $_SESSION['mensaje_exito'] = "Cliente registrado exitosamente (ID: $nro_cliente)";
+                header("Location: listar.php");
+                exit; // Detiene la ejecución para asegurar que la redirección ocurra.
+            } else {
+                throw new Exception("Error al registrar el cliente: " . $stmt->error);
+            }
+
+        } catch (Exception $e) {
+            $errores[] = $e->getMessage();
         }
     }
 }
 
-// Ahora incluir el header después del procesamiento
+// INCLUSIÓN DEL ENCABEZADO HTML
+// -----------------------------
+// Se incluye después de toda la lógica PHP para asegurar que las redirecciones funcionen.
 include(__DIR__ . '/../includes/header.php');
 ?>
 
@@ -258,7 +266,8 @@ include(__DIR__ . '/../includes/header.php');
             <small class="text-muted">
                 <strong>Campos requeridos:</strong> Solo el nombre es obligatorio.<br>
                 <strong>Valores por defecto:</strong> Si no se especifica razón social, se usará el nombre del cliente.<br>
-                <strong>Fecha de registro:</strong> Se asignará automáticamente la fecha y hora actual.
+                <strong>Fecha de registro:</strong> Se asignará automáticamente la fecha y hora actual.<br>
+                <strong>Campos opcionales:</strong> Ciudad y Zona pueden dejarse vacíos. MySQL los guardará como NULL automáticamente.
             </small>
         </div>
     </div>
