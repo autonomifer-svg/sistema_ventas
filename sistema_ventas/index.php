@@ -1,7 +1,21 @@
 <?php
+// INCLUSIÓN DE ARCHIVOS Y VERIFICACIÓN DE SEGURIDAD
+// --------------------------------------------------
+
+// Incluye el archivo de configuración global. 
+// Este archivo probablemente inicia la sesión (session_start()), define constantes como la URL base ($base_url)
+// y puede que cargue otras funciones esenciales para el sistema.
 require_once('includes/config.php');
+
+// Llama a la función requireAuth(). 
+// Esta es una medida de seguridad crucial que verifica si el usuario ha iniciado sesión.
+// Si el usuario no está autenticado, esta función probablemente lo redirigirá a la página de login (login.php)
+// para evitar el acceso no autorizado a esta página.
 requireAuth(); // Requiere autenticación
 
+// Incluye el archivo del encabezado de la página.
+// Este archivo contiene la parte superior de la estructura HTML (<html>, <head>, <body>, la barra de navegación, etc.).
+// Se incluye después de la lógica principal para que la página se muestre solo si el usuario está autenticado.
 include('includes/header.php');
 ?>
 
