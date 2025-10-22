@@ -1,31 +1,40 @@
 <?php
 session_start();
+// INCLUSIÓN DE ARCHIVOS Y VERIFICACIÓN DE ROLES
+// -----------------------------------------------
 include('../../includes/header.php');
 require_once('../../includes/conexion.php');
-require_once('../../includes/auth.php');
-require_once('../../includes/roles.php');
+require_once('../../includes/auth.php'); // Contiene funciones como verificarAutenticacion() y esAdministrador()
+require_once('../../includes/roles.php'); // Probablemente contiene definiciones de roles.
 
+// Se asegura de que el usuario esté logueado.
 verificarAutenticacion();
+// Se asegura de que solo los administradores puedan acceder a esta página.
 if (!esAdministrador()) {
-    header("Location: /index.php");
+    header("Location: /index.php"); // Redirige a los no-administradores.
     exit;
 }
 
-// Paginación
-$por_pagina = 10;
+// LÓGICA DE PAGINACIÓN
+// ---------------------
+$por_pagina = 10; // Número de usuarios por página.
 $pagina = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
-$inicio = ($pagina - 1) * $por_pagina;
+$inicio = ($pagina - 1) * $por_pagina; // Calcula el offset para la consulta SQL.
 
-// Obtener usuarios
+// OBTENCIÓN DE USUARIOS
+// ---------------------
+// NOTA: Esta consulta utiliza una tabla `usuarios` que parece ser inconsistente con la tabla `usuario` usada en `login.php`.
+// Los nombres de campos (id, nombre, usuario, rol) también difieren.
 $sql = "SELECT id, nombre, usuario, email, rol, fecha_registro, ultimo_acceso 
         FROM usuarios 
         ORDER BY fecha_registro DESC
         LIMIT $inicio, $por_pagina";
 $usuarios = $conexion->query($sql);
 
-// Total de usuarios
+// OBTENER EL NÚMERO TOTAL DE USUARIOS PARA LA PAGINACIÓN
+// -----------------------------------------------------
 $total_usuarios = $conexion->query("SELECT COUNT(*) as total FROM usuarios")->fetch_assoc()['total'];
-$total_paginas = ceil($total_usuarios / $por_pagina);
+$total_paginas = ceil($total_usuarios / $por_pagina); // Calcula el número total de páginas.
 ?>
 
 <div class="container mt-4">
