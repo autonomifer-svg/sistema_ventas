@@ -1,10 +1,20 @@
 <?php
+// INCLUSIÓN DE ARCHIVOS NECESARIOS
+// ---------------------------------
 include('../includes/header.php');
 require_once('../includes/conexion.php');
 
+// OBTENCIÓN Y VALIDACIÓN DEL ID DE LA VENTA
+// -----------------------------------------
 $venta_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+if (!$venta_id) {
+    header("Location: historial.php?error=ID de venta no válido");
+    exit;
+}
 
-// Obtener información de la venta
+// OBTENCIÓN DE LA INFORMACIÓN PRINCIPAL DE LA VENTA
+// -------------------------------------------------
+// Se consulta la tabla `salida` y se une con otras tablas para obtener información legible (nombre del cliente, sucursal, etc.).
 $sql_venta = "SELECT s.*, c.Nombre AS cliente, c.Telefono, c.Direccion,
               suc.Nombre as Sucursal, fp.FormaPago
               FROM salida s
@@ -17,12 +27,14 @@ $stmt_venta->bind_param("i", $venta_id);
 $stmt_venta->execute();
 $venta = $stmt_venta->get_result()->fetch_assoc();
 
+// Si no se encuentra la venta, redirigir al historial.
 if (!$venta) {
     header("Location: historial.php?error=Venta no encontrada");
     exit;
 }
 
-// Obtener detalles de la venta
+// OBTENCIÓN DE LOS DETALLES (PRODUCTOS) DE LA VENTA
+// ---------------------------------------------------
 $sql_detalle = "SELECT ds.*, p.Descripcion AS producto 
                 FROM detallesalida ds
                 JOIN productos p ON ds.CodigoNum = p.CodigoNum
@@ -32,12 +44,12 @@ $stmt_detalle->bind_param("i", $venta_id);
 $stmt_detalle->execute();
 $detalles = $stmt_detalle->get_result();
 
-// Calcular estadísticas adicionales
-$total_productos = 0;
-$cantidad_total = 0;
-$detalles_array = [];
+// CÁLCULO DE ESTADÍSTICAS ADICIONALES PARA LA VISTA
+// --------------------------------------------------
+$total_productos = 0; // Contador de cuántos tipos de productos diferentes hay en la venta.
+$cantidad_total = 0;  // Suma de la cantidad de todos los productos.
+$detalles_array = []; // Se guarda el resultado en un array para poder iterarlo en la tabla.
 
-// Convertir a array para poder usar múltiples veces
 while ($detalle = $detalles->fetch_assoc()) {
     $detalles_array[] = $detalle;
     $total_productos++;
@@ -521,3 +533,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <?php include('../includes/footer.php'); ?>
+
