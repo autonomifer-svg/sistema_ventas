@@ -1,10 +1,19 @@
 <?php
+// INCLUSIÓN DE ARCHIVOS Y VERIFICACIÓN DE SEGURIDAD
+// --------------------------------------------------
+
+// Incluye el archivo de configuración principal desde el directorio padre.
 require_once(__DIR__ . '/../includes/config.php');
+// Requiere que el usuario esté autenticado para acceder a esta página.
 requireAuth();
 
+// Incluye el encabezado de la página HTML.
 include(__DIR__ . '/../includes/header.php');
 
-// Mensajes de éxito/error
+// GESTIÓN DE MENSAJES DE RETORNO (FEEDBACK AL USUARIO)
+// -----------------------------------------------------
+// Muestra un mensaje de éxito o error si se pasan a través de la URL (por ejemplo, después de crear o eliminar un producto).
+
 if (isset($_GET['success'])) {
     echo "<div class='alert alert-success alert-dismissible fade show modern-alert'>
             <i class='bi bi-check-circle-fill'></i> " . htmlspecialchars($_GET['success']) . "
@@ -318,10 +327,17 @@ if (isset($_GET['error'])) {
         </div>
         <div class="card-body p-4">
             <?php
+            // BLOQUE PRINCIPAL DE LÓGICA PHP
+            // --------------------------------
             try {
+                // Conecta a la base de datos usando la función definida en config.php.
                 $conexion = conectarDB();
                 
-                // Consulta CORREGIDA - usando los campos correctos
+                // Define la consulta SQL para obtener todos los productos activos.
+                // - LEFT JOIN se usa para incluir información de tablas relacionadas (marca, rubro, tipo de producto).
+                //   Si un producto no tiene una marca asignada, los campos de marca serán NULL, pero el producto seguirá apareciendo.
+                // - Se seleccionan solo los productos donde `Suspendido` es 0 (activos).
+                // - Los resultados se ordenan alfabéticamente por la descripción del producto.
                 $sql = "SELECT 
                             p.CodigoNum, p.Codigo, p.Descripcion, p.PrecioVenta, p.`100` as Stock,
                             m.Marca, r.Descripcion as Rubro, tp.TipoProducto, p.Suspendido
@@ -332,22 +348,28 @@ if (isset($_GET['error'])) {
                         WHERE p.Suspendido = 0
                         ORDER BY p.Descripcion ASC";
                 
+                // Ejecuta la consulta en la base de datos.
                 $resultado = $conexion->query($sql);
                 
+                // Si la consulta falla, lanza una excepción para ser capturada por el bloque catch.
                 if (!$resultado) {
                     throw new Exception("Error en la consulta: " . $conexion->error);
                 }
                 
-                // Stats
-                $total_productos = $resultado->num_rows;
-                $productos_bajo_stock = 0;
-                $valor_inventario = 0;
+                // INICIALIZACIÓN Y CÁLCULO DE ESTADÍSTICAS
+                // -----------------------------------------
+                $total_productos = $resultado->num_rows; // Número total de productos encontrados.
+                $productos_bajo_stock = 0; // Contador para productos con stock bajo (<= 10).
+                $valor_inventario = 0;   // Suma total del valor del inventario (Precio * Stock).
                 
-                // Calcular estadísticas
+                // Se guarda el resultado en un array para poder iterarlo múltiples veces si fuera necesario
+                // y para calcular las estadísticas antes de empezar a imprimir la tabla.
                 $productos_array = [];
                 while ($row = $resultado->fetch_assoc()) {
                     $productos_array[] = $row;
+                    // Si el stock es 10 o menos, incrementa el contador.
                     if ($row['Stock'] <= 10) $productos_bajo_stock++;
+                    // Acumula el valor del inventario para este producto.
                     $valor_inventario += $row['PrecioVenta'] * $row['Stock'];
                 }
             ?>
@@ -383,7 +405,12 @@ if (isset($_GET['error'])) {
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($productos_array as $producto): ?>
+                            <?php 
+                            // RENDERIZADO DE LA TABLA DE PRODUCTOS
+                            // -------------------------------------
+                            // Se itera sobre el array de productos que se preparó anteriormente.
+                            foreach ($productos_array as $producto): 
+                            ?>
                                 <tr class="product-row" data-search="<?= strtolower(htmlspecialchars($producto['Codigo'] . ' ' . $producto['Descripcion'] . ' ' . ($producto['Marca'] ?? '') . ' ' . $producto['CodigoNum'])) ?>">
                                     <td>
                                         <span class="product-id"><?= htmlspecialchars($producto['Codigo']) ?></span>
@@ -412,17 +439,21 @@ if (isset($_GET['error'])) {
                                     </td>
                                     <td>
                                         <?php 
+                                        // LÓGICA CONDICIONAL PARA MOSTRAR EL BADGE DE STOCK
+                                        // --------------------------------------------------
+                                        // Cambia el color del badge según la cantidad de stock disponible.
                                         $stock = $producto['Stock'];
                                         if ($stock <= 10) {
-                                            echo "<span class='stock-badge-low'><i class='bi bi-exclamation-triangle'></i> $stock</span>";
+                                            echo "<span class='stock-badge-low'><i class='bi bi-exclamation-triangle'></i> $stock</span>"; // Rojo para stock bajo
                                         } elseif ($stock <= 30) {
-                                            echo "<span class='stock-badge-medium'><i class='bi bi-exclamation-circle'></i> $stock</span>";
+                                            echo "<span class='stock-badge-medium'><i class='bi bi-exclamation-circle'></i> $stock</span>"; // Amarillo para stock medio
                                         } else {
-                                            echo "<span class='stock-badge-high'><i class='bi bi-check-circle'></i> $stock</span>";
+                                            echo "<span class='stock-badge-high'><i class='bi bi-check-circle'></i> $stock</span>"; // Verde para stock alto
                                         }
                                         ?>
                                     </td>
                                     <td>
+                                        <?php // Muestra si el producto está disponible o no basado en el stock. ?>
                                         <?php if ($stock > 0): ?>
                                             <span class="status-available">
                                                 <i class="bi bi-check-circle-fill"></i> Disponible
@@ -447,7 +478,7 @@ if (isset($_GET['error'])) {
                                         </div>
                                     </td>
                                 </tr>
-                            <?php endforeach; ?>
+                            <?php endforeach; // Fin del bucle de productos ?>
                         </tbody>
                     </table>
                 </div>
@@ -561,3 +592,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <?php include(__DIR__ . '/../includes/footer.php'); ?>
+
