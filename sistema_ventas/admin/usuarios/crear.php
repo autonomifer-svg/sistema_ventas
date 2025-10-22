@@ -1,7 +1,8 @@
 <?php
 require_once(__DIR__ . '/../../includes/config.php');
-requireAdmin(); // Si es necesario
 
+// INICIO DE SESIÓN Y VERIFICACIÓN DE ROLES
+// -----------------------------------------
 session_start();
 include('../../includes/header.php');
 require_once('../../includes/conexion.php');
@@ -14,10 +15,15 @@ if (!esAdministrador()) {
     exit;
 }
 
+// INICIALIZACIÓN DE VARIABLES
+// ---------------------------
 $error = '';
 $success = '';
 
+// PROCESAMIENTO DEL FORMULARIO AL ENVIAR (MÉTODO POST)
+// -----------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // 1. RECOLECCIÓN DE DATOS
     $nombre = trim($_POST['nombre']);
     $usuario = trim($_POST['usuario']);
     $email = trim($_POST['email']);
@@ -25,13 +31,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $confirm_password = $_POST['confirm_password'];
     $rol = $_POST['rol'];
     
-    // Validaciones
+    // 2. VALIDACIONES BÁSICAS
     if (empty($nombre) || empty($usuario) || empty($password)) {
         $error = "Nombre, usuario y contraseña son obligatorios";
     } elseif ($password !== $confirm_password) {
         $error = "Las contraseñas no coinciden";
     } else {
-        // Verificar si el usuario ya existe
+        // 3. VERIFICAR SI EL USUARIO YA EXISTE
+        // NOTA: Se utiliza la tabla `usuarios`, que es inconsistente con `login.php`.
         $sql_check = "SELECT id FROM usuarios WHERE usuario = ?";
         $stmt_check = $conexion->prepare($sql_check);
         $stmt_check->bind_param("s", $usuario);
@@ -41,20 +48,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($result_check->num_rows > 0) {
             $error = "El nombre de usuario ya está en uso";
         } else {
-            // Crear usuario
-            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-            
-            $sql_insert = "INSERT INTO usuarios (nombre, usuario, email, password, rol) 
-                           VALUES (?, ?, ?, ?, ?)";
-            $stmt_insert = $conexion->prepare($sql_insert);
-            $stmt_insert->bind_param("sssss", $nombre, $usuario, $email, $hashed_password, $rol);
-            
-            if ($stmt_insert->execute()) {
-                $success = "Usuario creado exitosamente";
-                // Limpiar formulario
-                $nombre = $usuario = $email = '';
-            } else {
-                $error = "Error al crear el usuario: " . $stmt_insert->error;
+            // 4. CREACIÓN DEL USUARIO (SI PASA LAS VALIDACIONES)
+            try {
+                // Hashear la contraseña antes de guardarla es una práctica de seguridad crucial.
+                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+                
+                $sql_insert = "INSERT INTO usuarios (nombre, usuario, email, password, rol) VALUES (?, ?, ?, ?, ?)";
+                $stmt_insert = $conexion->prepare($sql_insert);
+                $stmt_insert->bind_param("sssss", $nombre, $usuario, $email, $hashed_password, $rol);
+                
+                if ($stmt_insert->execute()) {
+                    $success = "Usuario creado exitosamente";
+                    // Limpiar variables para que el formulario aparezca vacío.
+                    $nombre = $usuario = $email = '';
+                } else {
+                    throw new Exception($stmt_insert->error);
+                }
+            } catch (Exception $e) {
+                $error = "Error al crear el usuario: " . $e->getMessage();
             }
         }
     }
