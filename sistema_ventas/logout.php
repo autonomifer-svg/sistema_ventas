@@ -1,19 +1,27 @@
 <?php
-require_once('includes/config.php');
+// INCLUSIÓN DE ARCHIVO DE CONFIGURACIÓN
+// -------------------------------------
+require_once('includes/config.php'); // Probablemente inicia la sesión si no está activa.
 
-// Guardar información del usuario antes de destruir la sesión
+// --- PROCESO DE CIERRE DE SESIÓN ---
+
+// 1. GUARDAR INFORMACIÓN ANTES DE DESTRUIR
+// Se guarda el nombre del usuario y el tiempo de inicio de sesión para mostrarlos en la pantalla de despedida.
 $userName = $_SESSION['user_name'] ?? 'Usuario';
 $loginTime = $_SESSION['login_time'] ?? time();
 
-// Calcular duración de la sesión
+// 2. CALCULAR DURACIÓN DE LA SESIÓN
 $sessionDuration = time() - $loginTime;
 $hours = floor($sessionDuration / 3600);
 $minutes = floor(($sessionDuration % 3600) / 60);
 
-// Destruir todas las variables de sesión
+// 3. DESTRUIR TODAS LAS VARIABLES DE SESIÓN
+// Se vacía el array $_SESSION para eliminar todos los datos guardados en la sesión actual.
 $_SESSION = array();
 
-// Borrar la cookie de sesión
+// 4. BORRAR LA COOKIE DE SESIÓN
+// Esto asegura que la sesión no pueda ser reutilizada. Se establece una cookie con el mismo nombre
+// pero con una fecha de expiración en el pasado, lo que le indica al navegador que la elimine.
 if (ini_get("session.use_cookies")) {
     $params = session_get_cookie_params();
     setcookie(session_name(), '', time() - 42000,
@@ -22,9 +30,13 @@ if (ini_get("session.use_cookies")) {
     );
 }
 
-// Destruir la sesión
+// 5. DESTRUIR LA SESIÓN COMPLETAMENTE
+// Esta función finaliza la sesión en el servidor.
 session_destroy();
 
+// INCLUSIÓN DEL ENCABEZADO HTML
+// -----------------------------
+// Se incluye para dar formato a la página de despedida.
 include('includes/header.php');
 ?>
 
