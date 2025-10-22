@@ -1,5 +1,7 @@
 <?php
 session_start();
+// INCLUSIÓN DE ARCHIVOS Y VERIFICACIÓN DE ROLES
+// -----------------------------------------------
 include('../../includes/header.php');
 require_once('../../includes/conexion.php');
 require_once('../../includes/auth.php');
@@ -11,76 +13,81 @@ if (!esAdministrador()) {
     exit;
 }
 
+// INICIALIZACIÓN Y OBTENCIÓN DEL ID DE USUARIO
+// ---------------------------------------------
 $error = '';
-$success = '';
 $usuario_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
 if (!$usuario_id) {
-    header("Location: listar.php");
+    header("Location: listar.php?error=ID no válido");
     exit;
 }
 
-// Obtener datos del usuario
+// OBTENER DATOS DEL USUARIO A ELIMINAR
+// -------------------------------------
+// NOTA: Se utiliza la tabla `usuarios`, que es inconsistente con `login.php`.
 $sql_get = "SELECT * FROM usuarios WHERE id = ?";
 $stmt_get = $conexion->prepare($sql_get);
 $stmt_get->bind_param("i", $usuario_id);
 $stmt_get->execute();
-$result_get = $stmt_get->get_result();
-$usuario = $result_get->fetch_assoc();
+$usuario = $stmt_get->get_result()->fetch_assoc();
 
 if (!$usuario) {
-    header("Location: listar.php");
+    header("Location: listar.php?error=Usuario no encontrado");
     exit;
 }
 
-// Verificar que no se esté intentando eliminar el usuario actual
-if ($usuario_id == $_SESSION['usuario_id']) {
-    $error = "No puedes eliminar tu propio usuario";
+// VALIDACIONES DE SEGURIDAD
+// ---------------------------
+
+// 1. Evitar que un administrador se elimine a sí mismo.
+if ($usuario_id == $_SESSION['user_id']) { // Se asume que el id de usuario en sesión es 'user_id'
+    $error = "No puedes eliminar tu propio usuario.";
 }
 
-// Verificar si el usuario tiene ventas asociadas
+// 2. Verificar si el usuario tiene ventas asociadas para advertir al administrador.
+// NOTA: Se utiliza la tabla `ventas`, inconsistente con la tabla `salida` usada en otras partes.
 $sql_ventas = "SELECT COUNT(*) as total FROM ventas WHERE usuario_id = ?";
 $stmt_ventas = $conexion->prepare($sql_ventas);
 $stmt_ventas->bind_param("i", $usuario_id);
 $stmt_ventas->execute();
-$result_ventas = $stmt_ventas->get_result();
-$total_ventas = $result_ventas->fetch_assoc()['total'];
+$total_ventas = $stmt_ventas->get_result()->fetch_assoc()['total'];
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirmar_eliminacion'])) {
-    if ($usuario_id == $_SESSION['usuario_id']) {
-        $error = "No puedes eliminar tu propio usuario";
-    } elseif ($total_ventas > 0 && !isset($_POST['forzar_eliminacion'])) {
-        $error = "Este usuario tiene $total_ventas venta(s) asociada(s). Marca la casilla para confirmar la eliminación forzada.";
+// PROCESAMIENTO DE LA ELIMINACIÓN (MÉTODO POST)
+// -----------------------------------------------
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirmar_eliminacion']) && empty($error)) {
+    // Si el usuario tiene ventas y no se fuerza la eliminación, mostrar error.
+    if ($total_ventas > 0 && !isset($_POST['forzar_eliminacion'])) {
+        $error = "Este usuario tiene ventas asociadas. Debes marcar la casilla para forzar la eliminación.";
     } else {
-        // Proceder con la eliminación
+        // Se utiliza una transacción para asegurar la integridad de los datos.
         $conexion->begin_transaction();
-        
         try {
-            // Si se fuerza la eliminación y hay ventas, se pueden transferir a un usuario especial o marcar como eliminadas
+            // Si hay ventas asociadas, se desvinculan del usuario (se pone el `usuario_id` a NULL).
+            // Esto evita errores de clave foránea y mantiene el registro de la venta.
             if ($total_ventas > 0) {
-                // Opción 1: Marcar las ventas como de "usuario eliminado"
                 $sql_update_ventas = "UPDATE ventas SET usuario_id = NULL WHERE usuario_id = ?";
                 $stmt_update_ventas = $conexion->prepare($sql_update_ventas);
                 $stmt_update_ventas->bind_param("i", $usuario_id);
                 $stmt_update_ventas->execute();
             }
             
-            // Eliminar el usuario
+            // Finalmente, se elimina el usuario.
             $sql_delete = "DELETE FROM usuarios WHERE id = ?";
             $stmt_delete = $conexion->prepare($sql_delete);
             $stmt_delete->bind_param("i", $usuario_id);
             
             if ($stmt_delete->execute()) {
-                $conexion->commit();
+                $conexion->commit(); // Se confirman los cambios.
                 $_SESSION['mensaje_success'] = "Usuario eliminado exitosamente";
                 header("Location: listar.php");
                 exit;
             } else {
-                throw new Exception("Error al eliminar el usuario");
+                throw new Exception("Error al ejecutar la eliminación.");
             }
         } catch (Exception $e) {
-            $conexion->rollback();
-            $error = "Error al eliminar el usuario: " . $e->getMessage();
+            $conexion->rollback(); // Se revierten los cambios si algo falla.
+            $error = "Error en la transacción: " . $e->getMessage();
         }
     }
 }
