@@ -402,33 +402,6 @@ include('includes/header.php');
             </div>
         </div>
     </div>
-
-    <!-- Quick Actions Section -->
-    <div class="mt-5 pt-4 border-top">
-        <h3 class="text-center mb-4 text-muted">Acciones Rápidas</h3>
-        <div class="row justify-content-center">
-            <div class="col-auto mb-2">
-                <a href="<?= $base_url ?>ventas/nueva.php" class="btn btn-success-modern btn-modern">
-                    <i class="bi bi-plus-lg"></i> Nueva Venta
-                </a>
-            </div>
-            <div class="col-auto mb-2">
-                <a href="<?= $base_url ?>productos/crear.php" class="btn btn-primary-modern btn-modern">
-                    <i class="bi bi-box-seam"></i> Agregar Producto
-                </a>
-            </div>
-            <div class="col-auto mb-2">
-                <a href="<?= $base_url ?>clientes/crear.php" class="btn btn-info-modern btn-modern">
-                    <i class="bi bi-person-plus"></i> Nuevo Cliente
-                </a>
-            </div>
-            <div class="col-auto mb-2">
-                <a href="<?= $base_url ?>ventas/historial.php" class="btn btn-warning-modern btn-modern">
-                    <i class="bi bi-clock-history"></i> Ver Ventas
-                </a>
-            </div>
-        </div>
-    </div>
 </div>
 
 <script>
